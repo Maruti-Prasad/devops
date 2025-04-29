@@ -3,13 +3,13 @@ forms:
   - age: { label: "Age", type: "int", min: 21, max: 100 }
   - favouriteColour: { label: "Favourite colour", type: "string", allow: ["gray", "grey"], search: true }
   - password: { label: "Password", type: "string", inputType: "password" }
-  - rememberMe: { label: "Remember me", type: "boolean" }
-  - photo: { label: "Photo", type: "file" }
-  - email: { label: "Email", type: "string", inputType: "email" }
 
 flows:
   default:
   - form: myForm
     saveSubmittedBy: true
   - log: "Hello, ${myForm.age}" 
-  - log: "Hello, ${myForm.submittedBy.age}"
+  - log: "${datetime.current()}"
+  - log: "${datetime.current('dd.MM.yyy')}"
+  - log: "${datetime.format(datetime.current(), 'dd.MM.yyyy')}"
+  - log: "${datetime.parse('01.01.2018', 'dd.MM.yyyy')}"
