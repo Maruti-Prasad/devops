@@ -78,17 +78,13 @@ flows:
       url: "http://172.18.0.3:8001/api/v1/org/Default/secret"
       headers:
         Authorization: "razE9gjB7xidAGT5jNYQIw"
-        Content-Type: "multipart/form-data"
+        Content-Type: "application/x-www-form-urlencoded"
       request: json
       response: json
-      body: {}
-      formFields:
-        - name: "name"
-          value: "test12"
-        - name: "type"
-          value: "data"
-        - name: "data"
-          value: "myValue"
+      body:
+        - name: "test12"
+        - type: "data"
+        - data: "myValue"
     ignoreErrors: false
     out: response
 
