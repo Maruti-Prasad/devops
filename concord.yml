@@ -44,4 +44,4 @@ flows:
     out: secretValue
 
 
-  - log: "Secret renamed successfully"
+  - log: "Secret renamed ${secretValue}"
