@@ -6,6 +6,17 @@ forms:
   - updatePassword: { label: "Accept for Password update job run", type: boolean }
 
 flows:
+  Akeyless:
+  - form: AcceptForm
+  - if: ${AcceptForm.updatePassword}
+    then:
+      - log: "[INFO] Accepted for Password update ..."
+    else:
+      - log: "[ERROR] Password update is not accepted ..."
+      - exit
+
+  - log: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
+
   default:
   - form: AcceptForm
   - if: ${AcceptForm.updatePassword}
