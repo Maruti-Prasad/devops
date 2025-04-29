@@ -76,5 +76,5 @@ flows:
     in:
       action: create
       name: test123
-      visibility: private
+      visibility: "private"
       data: anders-test-value
