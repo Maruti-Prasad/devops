@@ -1,18 +1,23 @@
 configuration:
   runtime: "concord-v2"
-  dependencies:
-    - "mvn://org.codehaus.groovy:groovy-all:pom:2.5.23"
 
 forms:
   myForm:
-  - age: { label: "Age", type: "int", min: 21, max: 100 }
-  - favouriteColour: { label: "Favourite colour", type: "string", allow: ["gray", "grey"], search: true }
+  - updatePassword: { label: "Update Password", type: boolean }
   - password: { label: "Password", type: "string", inputType: "password" }
 
 flows:
   default:
   - form: myForm
     saveSubmittedBy: true
+
+  - if: ${myForm.updatePassword}
+    then:
+      - log: "[INFO] Accepted for Password update ..."
+    else:
+      - log: "[ERROR] Password update is not accepted ..."
+      - exit
+
   - log: "Hello, ${myForm.password}" 
   - log: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
   - task: http
