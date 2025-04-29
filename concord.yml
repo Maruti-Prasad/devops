@@ -16,7 +16,7 @@ flows:
     in:
       method: GET
       headers:
-        Authorization: "Basic razE9gjB7xidAGT5jNYQIw"
+        Authorization: "razE9gjB7xidAGT5jNYQIw"
       url: http://172.18.0.3:8001/api/v1/org/Default/secret
       ignoreErrors: false
       response: json
