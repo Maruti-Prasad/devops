@@ -11,5 +11,5 @@ flows:
   default:
   - form: myForm
     saveSubmittedBy: true
-    
+  - log: "Hello, ${myForm.age}" 
   - log: "Hello, ${myForm.submittedBy.age}"
