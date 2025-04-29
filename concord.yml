@@ -21,7 +21,4 @@ flows:
       ignoreErrors: false
       response: json
     out: response
-  - log: "statusCode=${response.content}"
-  - set:
-      secretNames: "${response.content.map(x -> x.name)}"
-  - log: "Names: ${secretNames}"
+  - log: "${response.content.map(x -> x.name).toList()}"
