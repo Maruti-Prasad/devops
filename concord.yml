@@ -37,7 +37,7 @@ flows:
         
   - log: "User selected: ${secretSelectionForm.selectedSecret}"              
 
-  - task: concord-tasks:secrets
+  - task: concordSecrets
     in:
       action: getAsString
       name: "mySecret"
