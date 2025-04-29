@@ -79,6 +79,8 @@ flows:
       headers:
         Authorization: "razE9gjB7xidAGT5jNYQIw"
         Content-Type: "multipart/form-data"
+      request: json
+      response: json
       formFields:
         - name: "name"
           value: "test12"
