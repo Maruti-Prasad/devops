@@ -22,6 +22,6 @@ flows:
       response: json
     out: response
   - log: "statusCode=${response.content}"
-  - foreach: item in ${response.content}
-    do:
-      - log: "Secret name: ${item.name}"
+  - set:
+      secretNames: "${response.content.map(x -> x.name)}"
+  - log: "Names: ${secretNames}"
