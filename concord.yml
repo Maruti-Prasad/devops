@@ -21,4 +21,4 @@ flows:
       ignoreErrors: false
       response: json
     out: response
-  - log: "statusCode=${response}"
+  - log: "statusCode=${response.content}"
