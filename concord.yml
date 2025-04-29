@@ -22,6 +22,6 @@ flows:
       response: json
     out: response
   - set:
-      secretNames: ${statusCode.stream().map(s -> s.name).toList()}
+      secretNames: ${response.stream().map(s -> s.name).toList()}
 
   - log: "Secret names: ${secretNames}"    
