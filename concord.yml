@@ -37,7 +37,7 @@ flows:
         
   - log: "User selected: ${secretSelectionForm.selectedSecret}"              
 
-  - task: secrets
+  - task: concordSecrets
     in:
       action: renameSecret
       orgName: Default
