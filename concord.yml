@@ -28,12 +28,11 @@ flows:
       secretNames: ${response.content.stream().map(s -> s.name).toList()}
   - log: "Secret names: ${secretNames}"    
 
-  - script: groovy
-    body: |
-      def secretnames = [
-        ["names": [ label: "secret names", type: "string", allow: ${secretNames}, search: true ]
-      ]
-      execution.setVariable('names', secretnames)
-  - form: myForm4
-    fields: ${names}
-  - log: "${myForm4}"
+  - form: secretSelectionForm
+    fields:
+      - selectedSecret:
+          type: "select"
+          label: "Select a secret"
+          options:
+            - ${secretNames}
+  - log: "User selected: ${secretSelectionForm.selectedSecret}"              
