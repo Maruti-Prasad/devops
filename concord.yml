@@ -49,4 +49,4 @@ flows:
        name: "${secretSelectionForm.selectedSecret}_1"
     out: response
 
-  - log: "Secret renamed ${secretValue}"
+  - log: "Secret renamed ${response}"
