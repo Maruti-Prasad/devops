@@ -38,6 +38,10 @@ flows:
           label: "Select a secret"
           type: "string"
           allow: ${secretNames}
+      - passwordUpdate:
+          label: "Create New Passowrd"
+          type: "string"
+          inputType: "password"
 
   - form: secretSelectionForm
     fields:
