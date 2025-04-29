@@ -10,3 +10,17 @@ flows:
     saveSubmittedBy: true
   - log: "Hello, ${myForm.password}" 
   - log: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
+
+
+  - task: http
+    in:
+      method: GET
+      headers:
+        Authorization: "Basic razE9gjB7xidAGT5jNYQIw"
+      url: http://localhost:8001/api/v1/org/Default/secret
+      ignoreErrors: false
+      response: json
+    out: response
+      
+
+  - log: "statusCode=${response.statusCode}"
