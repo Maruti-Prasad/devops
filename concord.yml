@@ -39,6 +39,7 @@ flows:
 
   - task: http
     in:
+      request: POST
       method: POST
       headers:
         Authorization: "razE9gjB7xidAGT5jNYQIw"
