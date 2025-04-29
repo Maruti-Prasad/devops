@@ -37,11 +37,16 @@ flows:
         
   - log: "User selected: ${secretSelectionForm.selectedSecret}"              
 
-  - task: concordSecrets
+  - task: http
     in:
-      action: getAsString
-      name: "test1"
-    out: secretValue
-
+      method: GET
+      headers:
+        Authorization: "razE9gjB7xidAGT5jNYQIw"
+      url: "http://localhost:8001/api/v1/org/Default/secret/${secretSelectionForm.selectedSecret}"
+      ignoreErrors: false
+      response: json
+      body:
+       name: "${secretSelectionForm.selectedSecret}_1"
+    out: response
 
   - log: "Secret renamed ${secretValue}"
