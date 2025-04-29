@@ -50,8 +50,6 @@ flows:
         {
            "name": "${secretSelectionForm.selectedSecret}_1"
         }
-      body:
-       name: "${secretSelectionForm.selectedSecret}_1"
     out: response
 
   - log: "Secret renamed ${response}"
