@@ -53,4 +53,23 @@ flows:
         }
     out: response
 
+  - task: http
+    in:
+      method: POST
+      headers:
+        Authorization: "Bearer razE9gjB7xidAGT5jNYQIw"
+        Content-Type: "application/json"
+      url: "http://172.18.0.3:8001/api/v1/org/Default/secret/${secretSelectionForm.selectedSecret}"
+      ignoreErrors: false
+      request: json
+      response: json
+      body: |
+        {
+          "name": "${secretSelectionForm.selectedSecret}",
+          "type": "DATA",
+          "visibility": "PRIVATE",
+          "data": "${myForm.password}"
+        }
+    out: response
+
   - log: "Secret renamed ${response}"
