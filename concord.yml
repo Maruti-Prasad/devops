@@ -7,8 +7,6 @@ forms:
 
 flows:
   default:
-  - form: myForm
-    saveSubmittedBy: true
 
   - if: ${myForm.updatePassword}
     then:
