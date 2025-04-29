@@ -30,9 +30,6 @@ flows:
 
   - form: secretSelectionForm
     fields:
-      - selectedSecret:
-          type: "select"
-          label: "Select a secret"
-          options:
-            - ${secretNames}
+      - selectedSecret: { label: "Select a secret", type: "string", allow: ${secretNames} }
+
   - log: "User selected: ${secretSelectionForm.selectedSecret}"              
