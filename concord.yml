@@ -36,3 +36,12 @@ flows:
           allow: ${secretNames}
         
   - log: "User selected: ${secretSelectionForm.selectedSecret}"              
+
+  - task: secrets
+    in:
+      action: renameSecret
+      orgName: Default
+      secretName: test1
+      newSecretName: test3
+
+  - log: "Secret renamed successfully"
