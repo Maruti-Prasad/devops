@@ -9,7 +9,5 @@ flows:
   - form: myForm
     saveSubmittedBy: true
   - log: "Hello, ${myForm.age}" 
-  - log: "${datetime.current()}"
-  - log: "${datetime.current('dd.MM.yyy')}"
-  - log: "${datetime.format(datetime.current(), 'dd.MM.yyyy')}"
+  - log: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
   - log: "${datetime.parse('01.01.2018', 'dd.MM.yyyy')}"
