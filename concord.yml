@@ -8,6 +8,5 @@ flows:
   default:
   - form: myForm
     saveSubmittedBy: true
-  - log: "Hello, ${myForm.age}" 
+  - log: "Hello, ${myForm.password}" 
   - log: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
-  - log: "${datetime.parse('01.01.2018', 'dd.MM.yyyy')}"
