@@ -31,7 +31,7 @@ flows:
   - script: groovy
     body: |
       def secretnames = [
-        ["names": [ label: "secret names", type: "string", allow: ${secretNames}, search: true }
+        ["names": [ label: "secret names", type: "string", allow: ${secretNames}, search: true ]
       ]
       execution.setVariable('names', secretnames)
   - form: myForm4
