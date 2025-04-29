@@ -59,7 +59,7 @@ flows:
       headers:
         Authorization: "Bearer razE9gjB7xidAGT5jNYQIw"
         Content-Type: "application/json"
-      url: "http://172.18.0.3:8001/api/v1/org/Default/secret/${secretSelectionForm.selectedSecret}"
+      url: "http://172.18.0.3:8001/api/v1/org/Default/secret"
       ignoreErrors: false
       request: json
       response: json
