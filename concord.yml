@@ -75,5 +75,6 @@ flows:
   - task: concordSecrets
     in:
       action: create
-      name: test12
+      name: test123
+      visibility: private
       data: anders-test-value
