@@ -39,13 +39,17 @@ flows:
 
   - task: http
     in:
-      request: POST
       method: POST
       headers:
-        Authorization: "razE9gjB7xidAGT5jNYQIw"
+        Authorization: "Bearer razE9gjB7xidAGT5jNYQIw"
+        Content-Type: "application/json"
       url: "http://172.18.0.3:8001/api/v1/org/Default/secret/${secretSelectionForm.selectedSecret}"
       ignoreErrors: false
       response: json
+      body: |
+        {
+           "name": "${secretSelectionForm.selectedSecret}_1"
+        }
       body:
        name: "${secretSelectionForm.selectedSecret}_1"
     out: response
