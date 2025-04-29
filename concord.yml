@@ -1,60 +1,18 @@
-forms:
-  ServiceAccountForm:
-    - service_account:
-        {
-          type: "string",
-          label: "service_account",
-          allow:
-            [
-              "password_rotate_26_01_2025",
-              "password_rotate_14_02_2025",
-              "PswdRotate_2",
-            ]
-        }
-    - new_password:
-        {
-          type: "string",
-          label: "Enter New Password",
-        }
+configuration:
+  arguments:
+    todoId: "1"
 
 flows:
   default:
-    - form: ServiceAccountForm
-      yield: true
-
-    - log: "Step 1 of 2: Data capture via concord Form"
-    - log: "Data collected from User Input form. Proceeding..."
-    - log: "Starting the flow: Default"
-    - log: "Value of service_account: ${ServiceAccountForm.service_account}"
-    - log: "Value of url: https://concord.prod.walmart.com/api/v2/org/ComputeManagement/secret/${ServiceAccountForm.service_account}"
-    
-    - log: "Step 2 of 2: Set multipart form data"
-    - log: "##########################  Updating the secret password   ###########################"
-
     - task: http
       in:
-        debug: true
-        verbose: true
-        request: formData
-        headers:
-          Authorization: "Basic dm41OGc1cjpIeWRlcmFiYWRAMTMwNA=="
-          Content-Type: "multipart/form-data; boundary=---------------------------randomString-boundarystring"
-        method: POST
-        url: "https://concord.prod.walmart.com/api/v2/org/ComputeManagement/secret/${ServiceAccountForm.service_account}"
-        body:
-          orgName: "ComputeManagement"
-          type: "USERNAME_PASSWORD"
-          username: "${ServiceAccountForm.service_account}"
-          password: "${ServiceAccountForm.new_password}"
+        url: "https://jsonplaceholder.typicode.com/todos/${todoId}"
         response: json
-        out: jsonResponse
-    - if: ${jsonResponse.success}
-      then:
-        - log: "Response received: ${jsonResponse.content}"
-        - log: "Response received: ${jsonResponse.status}"
-        - log: "############################ Password Updated Successfully for secret ${ServiceAccountForm.service_account}  ########################################"
-      else:
-        - log: "Response received: ${jsonResponse}"
-        - log: "############################ Password Updated failed for secret ${ServiceAccountForm.service_account}  ########################################"   
+        out: myTodo
 
-    - log: "Flow Ended: Default"
+    - if: "${myTodo.content.completed}"
+      then:
+        - log: "All done!"
+      else:
+        - log: "You got a todo item: ${myTodo.content.title}"
+
