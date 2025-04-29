@@ -1,5 +1,8 @@
 configuration:
   runtime: "concord-v2"
+  dependencies:
+    - "mvn://org.codehaus.groovy:groovy-all:pom:2.5.23"
+
 forms:
   myForm:
   - age: { label: "Age", type: "int", min: 21, max: 100 }
@@ -24,3 +27,13 @@ flows:
   - set:
       secretNames: ${response.content.stream().map(s -> s.name).toList()}
   - log: "Secret names: ${secretNames}"    
+
+  - script: groovy
+    body: |
+      def secretnames = [
+        ["names": [ label: "secret names", type: "string", allow: ${secretNames}, search: true }
+      ]
+      execution.setVariable('names', secretnames)
+  - form: myForm4
+    fields: ${names}
+  - log: "${myForm4}"
