@@ -17,7 +17,7 @@ flows:
 
   - log: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
 
-  default:
+  concord:
   - form: AcceptForm
   - if: ${AcceptForm.updatePassword}
     then:
