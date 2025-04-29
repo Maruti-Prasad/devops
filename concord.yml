@@ -12,4 +12,4 @@ flows:
   - form: myForm
     saveSubmittedBy: true
     
-  - log: "Hello, ${myForm.submittedBy.displayName}"
+  - log: "Hello, ${myForm.submittedBy.age}"
