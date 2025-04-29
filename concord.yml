@@ -21,4 +21,4 @@ flows:
       ignoreErrors: false
       response: json
     out: response
-  - log: "${response.content.map(x -> x.name).toList()}"
+  - log: "${response.content.stream().flatMap(p -> p.stream()).toList()}"
