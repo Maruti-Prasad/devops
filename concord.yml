@@ -3,7 +3,7 @@ configuration:
 
 forms:
   myForm:
-  - updatePassword: { label: "Update Password", type: boolean }
+  - updatePassword: { label: "Accept for Password update job run", type: boolean }
 
 flows:
   default:
@@ -17,7 +17,6 @@ flows:
       - log: "[ERROR] Password update is not accepted ..."
       - exit
 
-  - log: "Hello, ${myForm.password}" 
   - log: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
   - task: http
     in:
@@ -39,13 +38,6 @@ flows:
           type: "string"
           allow: ${secretNames}
       - passwordUpdate:
-          label: "Create New Passowrd"
-          type: "string"
-          inputType: "password"
-
-  - form: secretSelectionForm
-    fields:
-      - selectedSecret:
           label: "Create New Passowrd"
           type: "string"
           inputType: "password"
