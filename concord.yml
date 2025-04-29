@@ -37,11 +37,11 @@ flows:
         
   - log: "User selected: ${secretSelectionForm.selectedSecret}"              
 
-  - task: concordSecrets
+  - task: concord-tasks:secrets
     in:
-      action: renameSecret
-      orgName: Default
-      secretName: test1
-      newSecretName: test3
+      action: getAsString
+      name: "mySecret"
+    out: secretValue
+
 
   - log: "Secret renamed successfully"
