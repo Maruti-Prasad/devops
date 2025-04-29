@@ -4,7 +4,6 @@ configuration:
 forms:
   myForm:
   - updatePassword: { label: "Update Password", type: boolean }
-  - password: { label: "Password", type: "string", inputType: "password" }
 
 flows:
   default:
@@ -39,7 +38,14 @@ flows:
           label: "Select a secret"
           type: "string"
           allow: ${secretNames}
-        
+
+  - form: secretSelectionForm
+    fields:
+      - selectedSecret:
+          label: "Create New Passowrd"
+          type: "string"
+          inputType: "password"
+
   - log: "User selected: ${secretSelectionForm.selectedSecret}"              
 
   - task: http
