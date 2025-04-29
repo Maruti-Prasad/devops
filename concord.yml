@@ -72,20 +72,8 @@ flows:
         }
     out: response
 
-  - task: http
+  - task: concordSecrets
     in:
-      method: POST
-      url: "http://172.18.0.3:8001/api/v1/org/Default/secret"
-      headers:
-        Authorization: "razE9gjB7xidAGT5jNYQIw"
-        Content-Type: "application/x-www-form-urlencoded"
-      request: json
-      response: json
-      body:
-        - name: "test12"
-        - type: "data"
-        - data: "myValue"
-    ignoreErrors: false
-    out: response
-
-  - log: "Secret renamed ${response}"
+      action: create
+      name: test12
+      data: anders-test-value
