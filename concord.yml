@@ -2,13 +2,13 @@ configuration:
   runtime: "concord-v2"
 
 forms:
-  myForm:
+  AcceptForm:
   - updatePassword: { label: "Accept for Password update job run", type: boolean }
 
 flows:
   default:
-
-  - if: ${myForm.updatePassword}
+  - form: AcceptForm
+  - if: ${AcceptForm.updatePassword}
     then:
       - log: "[INFO] Accepted for Password update ..."
     else:
