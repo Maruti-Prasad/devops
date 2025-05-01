@@ -4,8 +4,8 @@ configuration:
 forms:
   AcceptForm:
   - SecretName: { label: "Name of the secret for change", type: "string", readonly: true, placeholder: "Place name here" }
-  - updatePassword: { label: "Accept for Password update job run", type: boolean }
   - data: { label: "data", type: "string", inputType: "password" }
+  - updatePassword: { label: "Accept for Password update job run", type: boolean }
 
 
 flows:
