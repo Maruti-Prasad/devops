@@ -50,8 +50,8 @@ flows:
       response: json
       body: |
         {
-            "name": "/prod/test/secret1",
-            "value": "your-secret-value",
+            "name": "/prod/test/${AcceptForm.SecretName}",
+            "value": "${AcceptForm.data}",
             "token": "${response.content.token}"
         }
     out: response
