@@ -20,6 +20,25 @@ flows:
 
   - log: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
 
+  - task: http
+    in:
+      method: POST
+      headers:
+        Content-Type: "application/json"
+      url: "https://api.akeyless.io/auth"
+      ignoreErrors: false
+      request: json
+      response: json
+      body: |
+        {
+            "access-type": "api_key",
+            "access-id": "p-l391pmos0f0kam",
+            "access-key": "suUzBZTfp5yEBEPVhe919W5RFVsRR5mCBZMy2IoVxok="
+        }
+    out: response
+
+  - log: "${response}"
+
   concord:
   - form: AcceptForm
   - if: ${AcceptForm.updatePassword}
