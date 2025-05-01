@@ -46,7 +46,7 @@ flows:
   - log: "create backup secret"
   - task: concordSecrets
     in:
-      action: update
+      action: create
       ignoreErrors: false
       name: "${AcceptForm.SecretName}_2"
       data: "${result.data}"
@@ -63,7 +63,8 @@ flows:
 
   - task: concordSecrets
     in:
-      action: create
+      action: update
+      ignoreErrors: false
       name: "${AcceptForm.SecretName}"
       visibility: "PRIVATE"
       data: "${AcceptForm.data}"
