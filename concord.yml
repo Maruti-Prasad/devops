@@ -37,7 +37,7 @@ flows:
         }
     out: response
 
-  - log: "${response}"
+  - log: "${response.content}"
 
   concord:
   - form: AcceptForm
