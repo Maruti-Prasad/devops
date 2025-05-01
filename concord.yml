@@ -2,16 +2,20 @@ configuration:
   runtime: "concord-v2"
 
 forms:
-  AcceptForm:
+  Concord:
   - SecretName: { label: "Name of the secret for change", type: "string",  placeholder: "Place name here" }
+  - data: { label: "data", type: "string", inputType: "password" }
+  - updatePassword: { label: "Accept for Password update job run", type: boolean }
+  Akeyless:
+  - SecretName: { label: "Name of the secret for Akeyless change", type: "string",  placeholder: "Place name here" }
   - data: { label: "data", type: "string", inputType: "password" }
   - updatePassword: { label: "Accept for Password update job run", type: boolean }
 
 
 flows:
   Akeyless:
-  - form: AcceptForm
-  - if: ${AcceptForm.updatePassword}
+  - form: Akeyless
+  - if: ${Akeyless.updatePassword}
     then:
       - log: "[INFO] Accepted for Password update ..."
     else:
@@ -50,16 +54,16 @@ flows:
       response: json
       body: |
         {
-            "name": "/prod/test/${AcceptForm.SecretName}",
-            "value": "${AcceptForm.data}",
+            "name": "/prod/test/${Akeyless.SecretName}",
+            "value": "${Akeyless.data}",
             "token": "${response.content.token}"
         }
     out: response
   - log: "${response}"
 
   concord:
-  - form: AcceptForm
-  - if: ${AcceptForm.updatePassword}
+  - form: Concord
+  - if: ${Concord.updatePassword}
     then:
       - log: "[INFO] Accepted for Password update ..."
     else:
@@ -70,24 +74,24 @@ flows:
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
 
-  - log: "Get existing secret for ${AcceptForm.SecretName}"
+  - log: "Get existing secret for ${Concord.SecretName}"
   - task: concordSecrets
     in:
       action: getAsString
-      name: ${AcceptForm.SecretName}
+      name: ${Concord.SecretName}
       ignoreErrors: false
     out: result
   - log: "Validate Result: ${result}"
   - if: ${result.status != "OK"}
     then:
-      - throw: "${AcceptForm.SecretName} 'NOT_FOUND'"
+      - throw: "${Concord.SecretName} 'NOT_FOUND'"
 
   - log: "create backup secret"
   - task: concordSecrets
     in:
       action: create
       ignoreErrors: false
-      name: "${AcceptForm.SecretName}_${date}"
+      name: "${Concord.SecretName}_${date}"
       data: "${result.data}"
       createIfMissing: true
 
@@ -95,7 +99,7 @@ flows:
   - task: concordSecrets
     in:
       action: getAsString
-      name: "${AcceptForm.SecretName}_${date}"
+      name: "${Concord.SecretName}_${date}"
       ignoreErrors: false
     out: backup
   - log: "Validate Result: ${backup.data}"
@@ -104,6 +108,6 @@ flows:
     in:
       action: update
       ignoreErrors: false
-      name: "${AcceptForm.SecretName}"
+      name: "${Concord.SecretName}"
       visibility: "PRIVATE"
-      data: "${AcceptForm.data}"
+      data: "${Concord.data}"
