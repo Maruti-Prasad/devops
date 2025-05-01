@@ -38,7 +38,16 @@ flows:
   - log: "Validate Result: ${result}"
   - if: ${result.status != "NOT_FOUND"}
     then:
-      - throw: "Expected 'NOT_FOUND', got ${result}"
+      - throw: "Expected 'NOT_FOUND', got ${result.data}"
+
+  - log: "Update secret create"
+  - task: concordSecrets
+    in:
+      action: update
+      ignoreErrors: false
+      name: myNewSecretName_2
+      data: "${result.data}"
+      createIfMissing: true
 
   - task: http
     in:
