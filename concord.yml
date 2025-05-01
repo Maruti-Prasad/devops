@@ -48,8 +48,14 @@ flows:
       name: myNewSecretName_2
       data: "${result.data}"
       createIfMissing: true
+
+  - task: concordSecrets
+    in:
+      action: getAsString
+      name: myNewSecretName_2
+      ignoreErrors: false
     out: backup
-  - log: "Update secret create ${backup.data}"
+  - log: "Validate Result: ${backup.data}"
 
   - task: http
     in:
