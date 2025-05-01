@@ -31,7 +31,7 @@ flows:
 
   - log: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
   - set:
-    date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
+      date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
 
   - log: "Get existing secret for ${AcceptForm.SecretName}"
   - task: concordSecrets
