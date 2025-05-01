@@ -74,7 +74,7 @@ flows:
           response: json
           body: |
             {
-                "username": "/prod/test/${Akeyless.SecretName}",
+                "name": "/prod/test/${Akeyless.SecretName}",
                 "password": "${Akeyless.data}",
                 "type": "password",
                 "token": "${response.content.token}",
