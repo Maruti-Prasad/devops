@@ -22,8 +22,6 @@ flows:
       - log: "[ERROR] Password update is not accepted ..."
       - exit
 
-  - log: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
-
   - task: http
     in:
       method: POST
