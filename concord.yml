@@ -27,31 +27,17 @@ flows:
       - exit
 
   - log: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
-  - task: http
+
+
+  - task: concordSecrets
     in:
-      method: GET
-      headers:
-        Authorization: "razE9gjB7xidAGT5jNYQIw"
-      url: http://172.18.0.4:8001/api/v1/org/Default/secret
-      ignoreErrors: false
-      response: json
-    out: response
-  - set:
-      secretNames: ${response.content.stream().map(s -> s.name).toList()}
-  - log: "Secret names: ${secretNames}"    
-
-  - form: secretSelectionForm
-    fields:
-      - selectedSecret:
-          label: "Select a secret"
-          type: "string"
-          allow: ${secretNames}
-      - passwordUpdate:
-          label: "Create New Passowrd"
-          type: "string"
-          inputType: "password"
-
-  - log: "User selected: ${secretSelectionForm.selectedSecret}"              
+      action: getAsString
+      name: anders-NOT_FOUND-secret
+      ignoreErrors: true
+  - log: "Validate Result: ${result}"
+  - if: ${result.status != "NOT_FOUND"}
+    then:
+      - throw: "Expected 'NOT_FOUND', got ${result}"
 
   - task: http
     in:
