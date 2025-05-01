@@ -9,7 +9,7 @@ forms:
   Akeyless:
   - SecretType: { label: "Secret Type", type: "string", allow: ["generic", "password"], search: true }
   - SecretName: { label: "Name of the secret for Akeyless change", type: "string",  placeholder: "Place name here" }
-  - data: { label: "data", type: "string", inputType: "password" }
+  - data: { label: "secret", type: "string", inputType: "password" }
   - updatePassword: { label: "Accept for Password update job run", type: boolean }
 
 
@@ -40,25 +40,48 @@ flows:
     out: response
 
   - log: "${response.content.token}"
-  - task: http
-    in:
-      method: POST
-      headers:
-        Content-Type: "application/json"
-        Authorization: "Bearer ${response.content.token}"
-      url: "https://api.akeyless.io/create-secret"
-      ignoreErrors: false
-      request: json
-      response: json
-      body: |
-        {
-            "name": "/prod/test/${Akeyless.SecretName}",
-            "type": "${Akeyless.SecretType}",
-            "value": "${Akeyless.data}",
-            "token": "${response.content.token}",
-            "keep-prev-version": "true"
-        }
-    out: response
+  - if: ${Akeyless.SecretType == "generic"}
+    then:
+      - task: http
+        in:
+          method: POST
+          headers:
+            Content-Type: "application/json"
+            Authorization: "Bearer ${response.content.token}"
+          url: "https://api.akeyless.io/create-secret"
+          ignoreErrors: false
+          request: json
+          response: json
+          body: |
+            {
+                "name": "/prod/test/${Akeyless.SecretName}",
+                "value": "${Akeyless.data}",
+                "type": "generic",
+                "token": "${response.content.token}",
+                "keep-prev-version": "true"
+            }
+        out: response
+    else:
+      - task: http
+        in:
+          method: POST
+          headers:
+            Content-Type: "application/json"
+            Authorization: "Bearer ${response.content.token}"
+          url: "https://api.akeyless.io/create-secret"
+          ignoreErrors: false
+          request: json
+          response: json
+          body: |
+            {
+                "username": "/prod/test/${Akeyless.SecretName}",
+                "password": "${Akeyless.data}",
+                "type": "password",
+                "token": "${response.content.token}",
+                "keep-prev-version": "true"
+            }
+        out: response
+
   - if: ${response.statusCode != "200"}
     then:
       - throw: "${Akeyless.SecretName} Failed to update :: ${response.error}"
