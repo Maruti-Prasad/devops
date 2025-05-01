@@ -55,7 +55,7 @@ flows:
             "name": "/prod/test/${Akeyless.SecretName}",
             "type": "password",
             "value": "${Akeyless.data}",
-            "token": "${response.content.token}"
+            "token": "${response.content.token}",
             "keep-prev-version": "true"
         }
     out: response
