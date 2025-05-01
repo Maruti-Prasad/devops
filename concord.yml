@@ -48,6 +48,8 @@ flows:
       name: myNewSecretName_2
       data: "${result.data}"
       createIfMissing: true
+    out: backup
+  - log: "Update secret create ${backup.data}"
 
   - task: http
     in:
