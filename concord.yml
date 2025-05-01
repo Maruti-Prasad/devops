@@ -3,7 +3,10 @@ configuration:
 
 forms:
   AcceptForm:
+  - SecretName: { label: "Name of the secret for change", type: "string", readonly: true, placeholder: "Place name here" }
   - updatePassword: { label: "Accept for Password update job run", type: boolean }
+  - data: { label: "data", type: "string", inputType: "password" }
+
 
 flows:
   Akeyless:
@@ -28,54 +31,39 @@ flows:
 
   - log: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
 
-
+  - log: "Get existing secret for ${AcceptForm.SecretName}"
   - task: concordSecrets
     in:
       action: getAsString
-      name: myNewSecretName_1
+      name: ${AcceptForm.SecretName}
       ignoreErrors: false
     out: result
   - log: "Validate Result: ${result}"
   - if: ${result.status != "OK"}
     then:
-      - throw: "myNewSecretName_1 'NOT_FOUND'"
+      - throw: "${AcceptForm.SecretName} 'NOT_FOUND'"
 
-  - log: "Update secret create"
+  - log: "create backup secret"
   - task: concordSecrets
     in:
       action: update
       ignoreErrors: false
-      name: myNewSecretName_2
+      name: "${AcceptForm.SecretName}_2"
       data: "${result.data}"
       createIfMissing: true
 
+  - log: "print backup secret"
   - task: concordSecrets
     in:
       action: getAsString
-      name: myNewSecretName_2
+      name: "${AcceptForm.SecretName}_2"
       ignoreErrors: false
     out: backup
   - log: "Validate Result: ${backup.data}"
 
-  - task: http
-    in:
-      method: POST
-      headers:
-        Authorization: "Bearer razE9gjB7xidAGT5jNYQIw"
-        Content-Type: "application/json"
-      url: "http://172.18.0.4:8001/api/v1/org/Default/secret/${secretSelectionForm.selectedSecret}"
-      ignoreErrors: false
-      request: json
-      response: json
-      body: |
-        {
-            "name": "${secretSelectionForm.selectedSecret}_1"
-        }
-    out: response
-
   - task: concordSecrets
     in:
       action: create
-      name: "${secretSelectionForm.selectedSecret}"
+      name: "${AcceptForm.SecretName}"
       visibility: "PRIVATE"
-      data: anders-test-value
+      data: "${AcceptForm.data}"
