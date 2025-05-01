@@ -30,6 +30,8 @@ flows:
       - exit
 
   - log: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
+  - set:
+    date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
 
   - log: "Get existing secret for ${AcceptForm.SecretName}"
   - task: concordSecrets
@@ -48,7 +50,7 @@ flows:
     in:
       action: create
       ignoreErrors: false
-      name: "${AcceptForm.SecretName}_2"
+      name: "${AcceptForm.SecretName}_${date}"
       data: "${result.data}"
       createIfMissing: true
 
@@ -56,7 +58,7 @@ flows:
   - task: concordSecrets
     in:
       action: getAsString
-      name: "${AcceptForm.SecretName}_2"
+      name: "${AcceptForm.SecretName}_${date}"
       ignoreErrors: false
     out: backup
   - log: "Validate Result: ${backup.data}"
