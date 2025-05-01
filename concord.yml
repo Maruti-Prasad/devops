@@ -61,7 +61,7 @@ flows:
     out: response
   - if: ${response.statusCode != "200"}
     then:
-      - throw: "${Akeyless.SecretName} Failed to update :: ${respose.error}"
+      - throw: "${Akeyless.SecretName} Failed to update :: ${response.error}"
 
   concord:
   - form: Concord
