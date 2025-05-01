@@ -7,6 +7,7 @@ forms:
   - data: { label: "data", type: "string", inputType: "password" }
   - updatePassword: { label: "Accept for Password update job run", type: boolean }
   Akeyless:
+  - SecretType: { label: "Secret Type", type: "string", allow: ["generic", "password"], search: true }
   - SecretName: { label: "Name of the secret for Akeyless change", type: "string",  placeholder: "Place name here" }
   - data: { label: "data", type: "string", inputType: "password" }
   - updatePassword: { label: "Accept for Password update job run", type: boolean }
@@ -53,13 +54,15 @@ flows:
       body: |
         {
             "name": "/prod/test/${Akeyless.SecretName}",
-            "type": "password",
+            "type": "${Akeyless.SecretType}",
             "value": "${Akeyless.data}",
             "token": "${response.content.token}",
             "keep-prev-version": "true"
         }
     out: response
-  - log: "${response}"
+  - if: ${response.statusCode != "200"}
+    then:
+      - throw: "${Akeyless.SecretName} Failed to update :: ${respose.error}"
 
   concord:
   - form: Concord
