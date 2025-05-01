@@ -33,7 +33,7 @@ flows:
     in:
       action: getAsString
       name: myNewSecretName_1
-      ignoreErrors: true
+      ignoreErrors: false
     out: result
   - log: "Validate Result: ${result}"
   - if: ${result.status != "NOT_FOUND"}
