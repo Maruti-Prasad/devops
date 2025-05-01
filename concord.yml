@@ -32,7 +32,7 @@ flows:
   - task: concordSecrets
     in:
       action: getAsString
-      name: anders-NOT_FOUND-secret
+      name: myNewSecretName_1
       ignoreErrors: true
     out: result
   - log: "Validate Result: ${result}"
