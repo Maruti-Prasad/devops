@@ -113,7 +113,7 @@ flows:
           
   # Set available secrets based on service name
   - set:
-      selectedSecrets: ${concord.selectedService.stream().keySet().toList()}
+      selectedSecrets: ${concord.selectedService.stream().map(s -> s.name).toList()}
 
   - form: secretSelectionForm
     fields:
