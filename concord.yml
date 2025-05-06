@@ -106,13 +106,9 @@ flows:
           }
         }
           
-  - task: parseJson
-    in: 
-      data: ${jsonData}
-    out: parsedData
-  
   # Extract the secretsMap for easier access
   - set:
+      parsedData: ${execution.variables().get('jsonService').fromJson(jsonData)}
       secretsMap: ${parsedData.secretsMap}
 
   - set:
