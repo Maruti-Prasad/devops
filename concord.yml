@@ -15,10 +15,6 @@ forms:
       label: "Select Secret Group"
       type: "string"
       allow: ["serviceAD1", "ServiceAD2"]
-  - selectedSecret: 
-      label: "Select Secret Key"
-      type: "string"
-      allow: ${selectedSecrets}
 
   - SecretName: { label: "Name of the secret for change", type: "string",  placeholder: "Place name here" }
   - data: { label: "data", type: "string", inputType: "password" }
@@ -119,7 +115,12 @@ flows:
   # Set available secrets based on service name
   - set:
       selectedSecrets: ${secretsMap[selectedService].keySet().toList()}
-  - form: selectSecretForm
+  - form: secretSelectionForm
+    fields:
+      - secret:
+          label: "Select a secret"
+          type: "string"
+          allow: ${selectedSecrets}
 
   - log: "You selected group: ${selectedService}"
   - log: "You selected key: ${selectedSecret}"
