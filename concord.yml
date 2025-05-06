@@ -11,6 +11,20 @@ forms:
   - SecretName: { label: "Name of the secret for Akeyless change", type: "string",  placeholder: "Place name here" }
   - data: { label: "secret", type: "string", inputType: "password" }
   - updatePassword: { label: "Accept for Password update job run", type: boolean }
+  - fields:
+      # Service selection dropdown
+      - serviceSelector: 
+          type: "string"
+          label: "Select Service"
+          allow: ["generic", "password"]
+          value: "test"  # Default to first service
+      
+      # This will be dynamically populated based on service selection
+      - secretSelector:
+          type: "string[]"
+          label: "Select Secrets"
+          allow: ${secretsMap.get(form.serviceSelector)}  # Dynamic options based on selected service
+          required: true
 
 
 flows:
