@@ -18,8 +18,9 @@ forms:
   - selectedSecret: 
       label: "Select Secret Key"
       type: "string"
-      optionsFrom: ${selectedSecrets}
+      allow: ${selectedSecrets}
       required: true
+
   - SecretName: { label: "Name of the secret for change", type: "string",  placeholder: "Place name here" }
   - data: { label: "data", type: "string", inputType: "password" }
   - updatePassword: { label: "Accept for Password update job run", type: boolean }
