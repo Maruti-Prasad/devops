@@ -111,20 +111,19 @@ flows:
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
           
-  - form: selectServiceForm
   # Set available secrets based on service name
   - set:
-      selectedSecrets: ${secretsMap[selectedService].keySet().toList()}
+      selectedSecrets: ${concord.selectedService.stream().keySet().toList()}
+
   - form: secretSelectionForm
     fields:
-      - secret:
+      - selectedSecret:
           label: "Select a secret"
           type: "string"
           allow: ${selectedSecrets}
 
-  - log: "You selected group: ${selectedService}"
-  - log: "You selected key: ${selectedSecret}"
-  - log: "Secret value: ${secretsMap[selectedService][selectedSecret]}"
+  - log: "You selected group: ${concord.selectedService}"
+  - log: "You selected key: ${secretSelectionForm.selectedSecret}"
 
   - log: "Get existing secret for ${Concord.SecretName}"
   - task: concordSecrets
