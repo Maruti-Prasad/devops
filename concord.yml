@@ -133,7 +133,7 @@ flows:
       
       # This will be dynamically populated based on service selection
       - secretSelector:
-          type: "string[]"
+          type: "string"
           label: "Select Secrets"
           allow: ${secretsMap.get(form.serviceSelector)}  # Dynamic options based on selected service
           required: true
