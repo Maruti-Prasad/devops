@@ -124,19 +124,14 @@ flows:
   # Define a single dynamic form with custom JavaScript to handle selection
   - form: secretSelectionForm
     fields:
-      # Service selection dropdown
-      - serviceSelector: 
+      - selectedSecret:
+          label: "Select a secret"
           type: "string"
-          label: "Select Service"
-          allow: ${serviceNames}
-          value: ${serviceNames.get(0)}  # Default to first service
-      
-      # This will be dynamically populated based on service selection
-      - secretSelector:
+          allow: ${secretNames}
+      - passwordUpdate:
+          label: "Create New Passowrd"
           type: "string"
-          label: "Select Secrets"
-          allow: ${secretsMap.get(form.serviceSelector)}  # Dynamic options based on selected service
-          required: true
+          inputType: "password"
 
   - log: "Get existing secret for ${Concord.SecretName}"
   - task: concordSecrets
