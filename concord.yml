@@ -112,10 +112,7 @@ flows:
           
   - log: "User selected service group: ${Concord.selectedService}"
 
-  - set:
-      selectedSecrets: ${secretsMap[Concord.selectedService].keySet().toArray()}
-
-  - log: "DEBUG: selectedService = ${selectedService}, selectedSecrets = ${selectedSecrets.join(', ')}"
+  - script: listSecretsForGroup
 
   - log: "Get existing secret for ${Concord.SecretName}"
   - task: concordSecrets
@@ -154,3 +151,21 @@ flows:
       name: "${Concord.SecretName}"
       visibility: "PRIVATE"
       data: "${Concord.data}"
+scripts:
+  listSecretsForGroup:
+    language: javascript
+    body: |
+      var group = args.serviceGroup;
+      var allSecrets = args.secretsMap;
+      var result = {};
+      if (allSecrets.hasOwnProperty(group)) {
+          result = allSecrets[group];
+          log.info("Secrets for '" + group + "':");
+          for (var key in result) {
+              log.info("  " + key + ": " + result[key]);
+          }
+      } else {
+          log.warn("Service group '" + group + "' not found.");
+      }
+      // Return value to Concord in proper format
+      result;
