@@ -3,6 +3,7 @@ configuration:
   - "mvn://org.codehaus.groovy:groovy-all:pom:2.5.23"
   runtime: "concord-v2"
   arguments:
+    test: "hau"
     serviceAD1:
     - "value1"
     - "value2"
@@ -114,7 +115,7 @@ flows:
           
   - script: groovy
     body: |
-      println execution.getVariable("ServiceAD3")
+      println execution.getVariable("test")
 
   - task: concordSecrets
     in:
