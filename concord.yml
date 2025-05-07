@@ -114,9 +114,12 @@ flows:
           
   - switch: ${Concord.selectedService}
     ServiceAD2:
-       - log: "It's red!"
+       - set:
+           result: "Value from case 1"
     ServiceAD1:
-       - log: "It's blue!"
+       - set:
+           result: "Value from case 2"
+  - log: "Result: ${result}"
 
   - task: concordSecrets
     in:
