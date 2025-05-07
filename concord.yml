@@ -108,9 +108,11 @@ flows:
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
           
+  - set:
+      service: "${Concord.selectedService}"
   - script: python
     body:
-      result.set("myVar", Concord.selectedService);
+      result.set("myVar", service);
     out: scriptResult
 
   - log: "result: ${scriptResult}"    # result: {myVar=myValue}
