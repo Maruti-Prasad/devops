@@ -113,9 +113,11 @@ flows:
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
           
-  - script: groovy
-    body: |
-      println execution.getVariable("test")
+  - if: ${Concord.selectedService == "ServiceAD2"}
+    then:
+     - set:
+        list: "${ServiceAD2.stream().toList()}" 
+  - log: "${list}"
 
   - task: concordSecrets
     in:
