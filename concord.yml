@@ -118,13 +118,6 @@ flows:
     ServiceAD1:
        - log: "It's blue!"
 
-  - if: ${Concord.selectedService == "ServiceAD2"}
-    then:
-      - set:
-         list: "${ServiceAD2.stream().toList()}" 
-
-  - log: "${list}"
-
   - task: concordSecrets
     in:
       action: getAsString
