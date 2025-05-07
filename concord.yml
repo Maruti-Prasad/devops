@@ -117,6 +117,7 @@ flows:
     then:
      - set:
         list: "${ServiceAD1.stream().toList()}" 
+
   - if: ${Concord.selectedService == "ServiceAD2"}
     then:
      - set:
