@@ -3,12 +3,8 @@ configuration:
   - "mvn://org.codehaus.groovy:groovy-all:pom:2.5.23"
   runtime: "concord-v2"
   arguments:
-    ServiceAD1:
-    - "value1"
-    - "value2"
-    ServiceAD2:
-    - "value3"
-    - "value4"
+    ServiceAD1: ["v1", "v2", "v3"]
+    ServiceAD2: ["v4", "v5", "v6"]
     ServiceAD3: ["v1", "v2", "v3"]
 
 forms:
