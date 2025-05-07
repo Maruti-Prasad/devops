@@ -3,7 +3,6 @@ configuration:
   - "mvn://org.codehaus.groovy:groovy-all:pom:2.5.23"
   runtime: "concord-v2"
   arguments:
-    test: "hau"
     ServiceAD1:
     - "value1"
     - "value2"
@@ -113,6 +112,7 @@ flows:
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
           
+  - log: "${Concord.selectedService}"
   - if: ${Concord.selectedService == "ServiceAD2"}
     then:
      - set:
