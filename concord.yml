@@ -4,7 +4,7 @@ configuration:
   runtime: "concord-v2"
   arguments:
     test: "hau"
-    serviceAD1:
+    ServiceAD1:
     - "value1"
     - "value2"
     ServiceAD2:
@@ -122,7 +122,6 @@ flows:
      - set:
         list: "${ServiceAD2.stream().toList()}"
 
-  - log: "${list}"
   - form: secretSelectionForm
     fields:
       - selectedSecret:
