@@ -16,7 +16,7 @@ forms:
   - selectedService: 
       label: "Select Secret Group"
       type: "string"
-      allow: ["serviceAD1", "ServiceAD2"]
+      allow: ["ServiceAD1", "ServiceAD2"]
   - SecretName: { label: "Name of the secret for change", type: "string",  placeholder: "Place name here" }
   - data: { label: "data", type: "string", inputType: "password" }
   - updatePassword: { label: "Accept for Password update job run", type: boolean }
