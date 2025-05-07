@@ -113,9 +113,9 @@ flows:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
           
   - set:
-      seclection: "${Concord.selectedService}"
-  - log: "User selected service group: ${Concord.selectedService} ${seclection}"
-  - log: "${seclection.stream().toList()}"
+      selection: "${Concord.selectedService}"
+  - log: "User selected service group: ${Concord.selectedService} ${selection}"
+  - log: "${ServiceAD2.stream().toList()}"
 
   - task: concordSecrets
     in:
