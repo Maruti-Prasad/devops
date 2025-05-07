@@ -13,7 +13,6 @@ forms:
       label: "Select Secret Group"
       type: "string"
       allow: ["ServiceAD1", "ServiceAD2"]
-  - SecretName: { label: "Name of the secret for change", type: "string",  placeholder: "Place name here" }
   - updatePassword: { label: "Accept for Password update job run", type: boolean }
   Akeyless:
   - SecretType: { label: "Secret Type", type: "string", allow: ["generic", "password"], search: true }
@@ -107,7 +106,12 @@ flows:
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
           
-  - log: "${Concord.selectedService}"
+  - script: python
+    body:
+      result.set("myVar", "myValue");
+    out: scriptResult
+  - log: "result: ${scriptResult}"    # result: {myVar=myValue}
+
   - if: ${Concord.selectedService == "ServiceAD2"}
     then:
      - set:
