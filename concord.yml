@@ -113,7 +113,8 @@ flows:
   - log: "User selected service group: ${Concord.selectedService}"
 
   - set:
-      selectedSecrets: ${secretsMap[Concord.selectedService].keySet().toList()}
+      selectedSecrets: ${secretsMap[Concord.selectedService].keySet().toArray()}
+
 
   - log: "Get existing secret for ${Concord.SecretName}"
   - task: concordSecrets
