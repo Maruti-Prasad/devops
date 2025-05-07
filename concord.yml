@@ -117,7 +117,7 @@ flows:
     then:
      - log: "AD1"
      - set:
-        list: "${ServiceAD1.stream().toList()}" 
+        list: ${ServiceAD1}
 
   - if: ${Concord.selectedService == "ServiceAD2"}
     then:
