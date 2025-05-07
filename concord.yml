@@ -115,7 +115,7 @@ flows:
   #- log: "${Concord.selectedService.stream().toList()}"
   - expr: "${Concord.selectedService}"
     out: selectedValues
-  - log: "Selected values for ${selectedService}: ${selectedValues}"
+  - log: "Selected values for : ${selectedValues}"
 
   - task: concordSecrets
     in:
