@@ -110,9 +110,10 @@ flows:
           
   - set:
       service: "${Concord.selectedService}"
+
   - script: python
     body:
-      result.set("myVar", service);
+      result.set("myVar", ServiceAD1);
     out: scriptResult
 
   - log: "result: ${scriptResult}"    # result: {myVar=myValue}
