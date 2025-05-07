@@ -113,11 +113,21 @@ flows:
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
           
+  - if: ${Concord.selectedService == "ServiceAD1"}
+    then:
+     - set:
+        list: "${ServiceAD1.stream().toList()}" 
   - if: ${Concord.selectedService == "ServiceAD2"}
     then:
      - set:
-        list: "${ServiceAD2.stream().toList()}" 
-  - log: "${list}"
+        list: "${ServiceAD2.stream().toList()}"
+
+  - form: secretSelectionForm
+    fields:
+      - selectedSecret:
+          label: "Select a secret"
+          type: "string"
+          allow: ${list}
 
   - task: concordSecrets
     in:
