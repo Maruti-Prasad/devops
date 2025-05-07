@@ -112,14 +112,9 @@ flows:
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
           
-  - switch: ${Concord.selectedService}
-    ServiceAD2:
-      - set:
-          result: "Value from case 1"
-    ServiceAD1:
-      - set:
-          result: "Value from case 2"
-      - log: "Result: ${result}"
+  - script: groovy
+    body: |
+      println execution.getVariable("date")
 
   - task: concordSecrets
     in:
