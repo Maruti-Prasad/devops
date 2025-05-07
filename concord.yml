@@ -14,7 +14,8 @@ forms:
   - selectedService: 
       label: "Select Secret Group"
       type: "string"
-      allow: ["ServiceAD1", "ServiceAD2"]
+      allow: "${runtime}"
+      #allow: ["ServiceAD1", "ServiceAD2"]
   - updatePassword: { label: "Accept for Password update job run", type: boolean }
   Akeyless:
   - SecretType: { label: "Secret Type", type: "string", allow: ["generic", "password"], search: true }
