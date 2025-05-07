@@ -110,7 +110,7 @@ flows:
           
   - script: python
     body:
-      result.set("myVar", "${ServiceAD1}");
+      result.set("myVar", ServiceAD1);
     out: scriptResult
   - log: "result: ${scriptResult}"    # result: {myVar=myValue}
 
