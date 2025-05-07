@@ -129,6 +129,7 @@ flows:
           type: "string"
           allow: "${list}"
 
+  - log: "Validate Result: ${secretSelectionForm.selectedSecret}"
   - task: concordSecrets
     in:
       action: getAsString
