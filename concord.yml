@@ -100,7 +100,7 @@ flows:
   concord:
   - form: Concord
   - if: ${Concord.updatePassword}
-      then:
+    then:
       - log: "[INFO] Accepted for Password update ..."
     else:
       - log: "[ERROR] Password update is not accepted ..."
