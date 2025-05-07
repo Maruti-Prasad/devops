@@ -114,7 +114,7 @@ flows:
           
   - script: groovy
     body: |
-      println execution.getVariable("date")
+      println execution.getVariable("ServiceAD3")
 
   - task: concordSecrets
     in:
