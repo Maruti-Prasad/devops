@@ -112,20 +112,6 @@ flows:
           
   - log: "User selected service group: ${selectedService}"
 
-  # Set available secrets based on service name
-  - set:
-      selectedSecrets: ${secretsMap[selectedService].keySet().toList()}
-
-  - form: secretSelectionForm
-    fields:
-      - selectedSecret:
-          label: "Select a secret"
-          type: "string"
-          allow: ${selectedSecrets}
-
-  - log: "You selected group: ${concord.selectedService}"
-  - log: "You selected key: ${secretSelectionForm.selectedSecret}"
-
   - log: "Get existing secret for ${Concord.SecretName}"
   - task: concordSecrets
     in:
