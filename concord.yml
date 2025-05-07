@@ -4,11 +4,11 @@ configuration:
   runtime: "concord-v2"
   arguments:
     serviceAD1:
-      - "value1"
-      - "value2"
+    - "value1"
+    - "value2"
     ServiceAD2:
-      - "value3"
-      - "value4"
+    - "value3"
+    - "value4"
     ServiceAD3: ["v1", "v2", "v3"]
 
 forms:
