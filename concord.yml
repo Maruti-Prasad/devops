@@ -112,10 +112,7 @@ flows:
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
           
-  #- log: "${Concord.selectedService.stream().toList()}"
-  - expr: "${Concord.selectedService}"
-    out: selectedValues
-  - log: "Selected values for : ${selectedValues}"
+  - log: "${ServiceAD2.stream().toList()}"
 
   - task: concordSecrets
     in:
