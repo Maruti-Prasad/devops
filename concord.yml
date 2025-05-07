@@ -115,19 +115,7 @@ flows:
     body:
       result.set("var", globals()[service]);
     out:
-      list1: ${result.var}
-
-  - log: "result: ${list1}"    # result: {myVar=myValue}
-
-  - if: ${Concord.selectedService == "ServiceAD2"}
-    then:
-     - set:
-        list: "${ServiceAD2.stream().toList()}"
-
-  - if: ${Concord.selectedService == "ServiceAD1"}
-    then:
-     - set:
-        list: "${ServiceAD1.stream().toList()}"
+      list: ${result.var}
 
   - form: secretSelectionForm
     fields:
