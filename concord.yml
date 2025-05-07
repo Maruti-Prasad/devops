@@ -122,6 +122,7 @@ flows:
      - set:
         list: "${ServiceAD2.stream().toList()}"
 
+  - log: "${list}"
   - form: secretSelectionForm
     fields:
       - selectedSecret:
