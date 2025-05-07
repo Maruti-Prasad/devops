@@ -127,7 +127,7 @@ flows:
       - selectedSecret:
           label: "Select a secret"
           type: "string"
-          allow: ${list}
+          allow: "${list}"
 
   - task: concordSecrets
     in:
