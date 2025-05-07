@@ -112,7 +112,12 @@ flows:
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
           
-  - log: "${ServiceAD2.stream().toList()}"
+  - if: ${Concord.updatePassword = "ServiceAD2"}
+    then:
+      - set:
+         list: "${ServiceAD2.stream().toList()}" 
+
+  - log: "${list}"
 
   - task: concordSecrets
     in:
