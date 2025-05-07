@@ -113,10 +113,11 @@ flows:
 
   - script: python
     body:
-      result.set("myVar", globals()[service]);
-    out: scriptResult
+      result.set("var", globals()[service]);
+    out:
+      list1: ${result.var}
 
-  - log: "result: ${scriptResult}"    # result: {myVar=myValue}
+  - log: "result: ${list1}"    # result: {myVar=myValue}
 
   - if: ${Concord.selectedService == "ServiceAD2"}
     then:
