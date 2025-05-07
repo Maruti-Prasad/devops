@@ -112,6 +112,12 @@ flows:
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
           
+  - switch: ${Concord.selectedService}
+    ServiceAD2:
+       - log: "It's red!"
+    ServiceAD1:
+       - log: "It's blue!"
+
   - if: ${Concord.selectedService == "ServiceAD2"}
     then:
       - set:
