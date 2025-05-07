@@ -113,7 +113,7 @@ flows:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
           
   - log: "User selected service group: ${Concord.selectedService}"
-  - log: "${ServiceAD2.stream().filter(i -> i % 2 == 0).toList()}"
+  - log: "${ServiceAD2.stream().toList()}"
 
   - task: concordSecrets
     in:
