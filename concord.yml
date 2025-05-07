@@ -115,7 +115,7 @@ flows:
   - set:
       selection: "${Concord.selectedService}"
   - log: "User selected service group: ${Concord.selectedService} ${selection}"
-  - log: "${${Concord.selectedService}.stream().toList()}"
+  - log: "${Concord.selectedService.stream().toList()}"
 
   - task: concordSecrets
     in:
