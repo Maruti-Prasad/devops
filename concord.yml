@@ -113,7 +113,7 @@ flows:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
           
   #- log: "${Concord.selectedService.stream().toList()}"
-  - expr: "${arguments[selectedService]}"
+  - expr: "${Concord.selectedService}"
     out: selectedValues
   - log: "Selected values for ${selectedService}: ${selectedValues}"
 
