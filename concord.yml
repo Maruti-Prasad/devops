@@ -112,10 +112,10 @@ flows:
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
           
-  - set:
-      selection: "${Concord.selectedService}"
-  - log: "User selected service group: ${Concord.selectedService} ${selection}"
-  - log: "${Concord.selectedService.stream().toList()}"
+  #- log: "${Concord.selectedService.stream().toList()}"
+  - expr: "${arguments[selectedService]}"
+    out: selectedValues
+  - log: "Selected values for ${selectedService}: ${selectedValues}"
 
   - task: concordSecrets
     in:
