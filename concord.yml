@@ -112,22 +112,6 @@ flows:
           
   - log: "User selected service group: ${Concord.selectedService}"
 
-  - script: listSecretsForGroup
-  listSecretsForGroup:
-    - script: |
-        var group = execution.variables().get("serviceGroup");
-        var allSecrets = execution.variables().get("secretsMap");
-        var result = {};
-        if (allSecrets.hasOwnProperty(group)) {
-            result = allSecrets[group];
-            log.info("Secrets for '" + group + "':");
-            for (var key in result) {
-                log.info("  " + key + ": " + result[key]);
-            }
-        } else {
-            log.warn("Service group '" + group + "' not found.");
-        }
-        execution.setVariable("result", result);
 
   - log: "Get existing secret for ${Concord.SecretName}"
   - task: concordSecrets
