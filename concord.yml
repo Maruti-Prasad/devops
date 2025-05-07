@@ -1,13 +1,15 @@
 configuration:
+  dependencies:
+  - "mvn://org.codehaus.groovy:groovy-all:pom:2.5.23"
   runtime: "concord-v2"
   arguments:
-    secretsMap:
-      serviceAD1:
-        secret1: "value1"
-        secret2: "value2"
-      ServiceAD2:
-        sec1: "value3"
-        sec2: "value4"
+    serviceAD1:
+      - "value1"
+      - "value2"
+    ServiceAD2:
+      - "value3"
+      - "value4"
+    ServiceAD3: ["v1", "v2", "v3"]
 
 forms:
   Concord:
@@ -111,9 +113,8 @@ flows:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
           
   - log: "User selected service group: ${Concord.selectedService}"
+  - log: "${ServiceAD2.stream().filter(i -> i % 2 == 0).toList()}"
 
-
-  - log: "Get existing secret for ${Concord.SecretName}"
   - task: concordSecrets
     in:
       action: getAsString
