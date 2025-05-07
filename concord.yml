@@ -110,7 +110,7 @@ flows:
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
           
-  - log: "User selected service group: ${selectedService}"
+  - log: "User selected service group: ${Concord.selectedService}"
 
   - log: "Get existing secret for ${Concord.SecretName}"
   - task: concordSecrets
