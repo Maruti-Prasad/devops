@@ -18,7 +18,6 @@ forms:
       type: "string"
       allow: ["ServiceAD1", "ServiceAD2"]
   - SecretName: { label: "Name of the secret for change", type: "string",  placeholder: "Place name here" }
-  - data: { label: "data", type: "string", inputType: "password" }
   - updatePassword: { label: "Accept for Password update job run", type: boolean }
   Akeyless:
   - SecretType: { label: "Secret Type", type: "string", allow: ["generic", "password"], search: true }
@@ -129,12 +128,15 @@ flows:
           label: "Select a secret"
           type: "string"
           allow: "${list}"
+      - passwordUpdate:
+          label: "Create New Passowrd"
+          type: "string"
+          inputType: "password"
 
-  - log: "Validate Result: ${secretSelectionForm.selectedSecret}"
   - task: concordSecrets
     in:
       action: getAsString
-      name: ${Concord.SecretName}
+      name: ${secretSelectionForm.selectedSecret}
       ignoreErrors: false
     out: result
   - log: "Validate Result: ${result}"
@@ -147,7 +149,7 @@ flows:
     in:
       action: create
       ignoreErrors: false
-      name: "${Concord.SecretName}_${date}"
+      name: "${secretSelectionForm.selectedSecret}_${date}"
       data: "${result.data}"
       createIfMissing: true
 
@@ -155,7 +157,7 @@ flows:
   - task: concordSecrets
     in:
       action: getAsString
-      name: "${Concord.SecretName}_${date}"
+      name: "${secretSelectionForm.selectedSecret}_${date}"
       ignoreErrors: false
     out: backup
   - log: "Validate Result: ${backup.data}"
@@ -164,6 +166,6 @@ flows:
     in:
       action: update
       ignoreErrors: false
-      name: "${Concord.SecretName}"
+      name: "${secretSelectionForm.selectedSecret}"
       visibility: "PRIVATE"
-      data: "${Concord.data}"
+      data: "${secretSelectionForm.passwordUpdate}"
