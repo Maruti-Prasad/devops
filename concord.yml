@@ -141,6 +141,7 @@ flows:
           type: "string"
           allow: "${list}"
       - updatePassword: { label: "Accept for Password update job run", type: boolean }
+      - fullName: { label: "Name", type: "string", pattern: ".* .*", readonly: true, placeholder: "${comma_list}" }
     
   - call: update
     withItems: ${list}
