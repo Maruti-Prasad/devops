@@ -114,7 +114,7 @@ flows:
 
   - form: selectionform
     fields:
-      - updatePassword: { label: "${comma_list} Approve the above list to be updated with provided password", type: boolean }
+      - updatePassword: { label: "secrets -> ${comma_list} \n Approve the above list to be updated with provided password", type: boolean }
 
   - call: update
     withItems: ${list}
