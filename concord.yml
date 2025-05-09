@@ -126,7 +126,7 @@ flows:
       - selectedSecret:
           label: "Select a secret"
           type: "string"
-          readonly: true,
+          readonly: true
           placeholder: "${list}"
       - updatePassword: { label: "Accept for Password update job run", type: boolean }
     
