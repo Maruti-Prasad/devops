@@ -5,9 +5,9 @@ configuration:
 
   runtime: "concord-v2"
   arguments:
-    ServiceAD1: ["v1", "v2", "v3"]
-    ServiceAD2: ["v4", "v5", "v6"]
-    ServiceAD3: ["v1", "v2", "v3"]
+    ServiceAD1: ["sec1", "sec2", "sec3"]
+    ServiceAD2: ["sec4", "sec5", "sec6"] 
+    ServiceAD3: ["sec7", "sec8", "sec9"] 
 
 forms:
   Concord:
@@ -96,7 +96,7 @@ flows:
     then:
       - throw: "${Akeyless.SecretName} Failed to update :: ${response.error}"
 
-  default:
+  Concord:
   - form: Concord
   - if: ${Concord.updatePassword}
     then:
@@ -118,10 +118,12 @@ flows:
     out:
       list: ${result.var}
 
-  - call: concord
+  - call: flow-v2
+
+  - call: secret-update
     withItems: ${list}
 
-  concord:
+  secret-update:
   - task: concordSecrets
     in:
       action: getAsString
@@ -158,3 +160,9 @@ flows:
       name: "${item}"
       visibility: "PRIVATE"
       data: "${Concord.Password}"
+
+flow-v2:
+  - try:
+      - log: "hai"
+    error:
+      - log: "error" # will print error log
