@@ -115,6 +115,8 @@ flows:
   - form: "${comma_list}"
     fields:
       - updatePassword: { label: "Approve the above list to be updated with provided password", type: boolean }
+    out:
+      approved: ${updatePassword}
 
   - log: "User approved update: ${updatePassword}"
 
