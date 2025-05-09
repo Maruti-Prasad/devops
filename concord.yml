@@ -140,8 +140,7 @@ flows:
           label: "Select a secret"
           type: "string"
           allow: "${list}"
-      - updatePassword: { label: "Accept for Password update job run", type: boolean }
-      - fullName: { label: "Name", type: "string", pattern: ".* .*", readonly: true, placeholder: "${comma_list}" }
+      - updatePassword: { label: "${comm_list}}", type: boolean }
     
   - call: update
     withItems: ${list}
