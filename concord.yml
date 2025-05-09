@@ -171,8 +171,8 @@ flows:
     in:
       inventory:
         - remote:
-          hosts:
-            - "example.com"
+            hosts:
+              - "example.com"
       playbook: playbook.yml
       extraVars:
         bind_password: "${Ansible.data}"
