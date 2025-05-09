@@ -125,9 +125,9 @@ flows:
       list: ${result.list}
       comma_list: ${result.comma_list}
 
-  - form: "${comma_list}"
+  - form: "Secrets will be update :: ${comma_list}"
     fields:
-      - updatePassword: { label: "hai\n${comma_list}", type: boolean }
+      - updatePassword: { label: "Approve the list for password update", type: boolean }
     
   - call: update
     withItems: ${list}
