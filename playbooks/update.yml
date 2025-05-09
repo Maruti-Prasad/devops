@@ -1,7 +1,6 @@
 ---
 - name: Update file with specific content
   hosts: all
-  become: yes
   tasks:
     - name: Overwrite /tmp/hello.txt with static content
       copy:
