@@ -140,11 +140,6 @@ flows:
           label: "Select a secret"
           type: "string"
           allow: "${list}"
-      - selectedSecret:
-          label: "test"
-          type: "string"
-          readonly: true
-          placeholder: "hai ${list}"
       - updatePassword: { label: "Accept for Password update job run", type: boolean }
     
   - call: update
