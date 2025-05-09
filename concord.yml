@@ -118,7 +118,7 @@ flows:
 
   - log: "${comma_list}.updatePassword"
 
-  - if: ${Concord.updatePassword}
+  - if: "${comma_list}.updatePassword"
     then:
       - log: "[INFO] Accepted for Password update ..."
     else:
