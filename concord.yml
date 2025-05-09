@@ -114,6 +114,9 @@ flows:
 
   - form: ApprovalForm
     fields:
+      - secretsInfo:
+          label: "You are about to update secrets for: ${comma_list}"
+          type: label
       - updatePassword: 
           label: |
              Approve password update for secrets
