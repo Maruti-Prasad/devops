@@ -15,6 +15,7 @@ forms:
       label: "Select Secret Group"
       type: "string"
       allow: ["ServiceAD1", "ServiceAD2"]
+  - Password: { label: "Password", type: "string", inputType: "password" }
   - updatePassword: { label: "Accept for Password update job run", type: boolean }
   Akeyless:
   - SecretType: { label: "Secret Type", type: "string", allow: ["generic", "password"], search: true }
@@ -95,7 +96,7 @@ flows:
     then:
       - throw: "${Akeyless.SecretName} Failed to update :: ${response.error}"
 
-  concord:
+  default:
   - form: Concord
   - if: ${Concord.updatePassword}
     then:
@@ -117,34 +118,27 @@ flows:
     out:
       list: ${result.var}
 
-  - form: secretSelectionForm
-    fields:
-      - selectedSecret:
-          label: "Select a secret"
-          type: "string"
-          allow: "${list}"
-      - passwordUpdate:
-          label: "Create New Passowrd"
-          type: "string"
-          inputType: "password"
+  - call: concord
+    withItems: ${list}
 
+  concord:
   - task: concordSecrets
     in:
       action: getAsString
-      name: ${secretSelectionForm.selectedSecret}
+      name: ${item}
       ignoreErrors: false
     out: result
   - log: "Validate Result: ${result}"
   - if: ${result.status != "OK"}
     then:
-      - throw: "${Concord.SecretName} 'NOT_FOUND'"
+      - throw: "${item} 'NOT_FOUND'"
 
   - log: "create backup secret"
   - task: concordSecrets
     in:
       action: create
       ignoreErrors: false
-      name: "${secretSelectionForm.selectedSecret}_${date}"
+      name: "${item}_${date}"
       data: "${result.data}"
       createIfMissing: true
 
@@ -152,7 +146,7 @@ flows:
   - task: concordSecrets
     in:
       action: getAsString
-      name: "${secretSelectionForm.selectedSecret}_${date}"
+      name: "${item}_${date}"
       ignoreErrors: false
     out: backup
   - log: "Validate Result: ${backup.data}"
@@ -161,6 +155,6 @@ flows:
     in:
       action: update
       ignoreErrors: false
-      name: "${secretSelectionForm.selectedSecret}"
+      name: "${item}"
       visibility: "PRIVATE"
-      data: "${secretSelectionForm.passwordUpdate}"
+      data: "${Concord.Password}"
