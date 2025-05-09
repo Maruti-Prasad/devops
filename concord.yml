@@ -128,7 +128,7 @@ flows:
           type: "string"
           allow: "${list}"
       - selectedSecret:
-          label: "Select a secret"
+          label: "${list}"
           type: "string"
           readonly: true
           placeholder: "${list}"
