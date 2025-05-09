@@ -125,7 +125,7 @@ flows:
       list: ${result.list}
       comma_list: ${result.comma_list}
 
-  - form: secretSelectionForm
+  - form: "${comma_list}"
     fields:
       - updatePassword: { label: "hai\n${comma_list}", type: boolean }
     
