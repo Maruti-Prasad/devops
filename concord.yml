@@ -1,7 +1,4 @@
 configuration:
-  meta:
-    ui:
-      hideFlowName: true
   dependencies:
   - "mvn://org.codehaus.groovy:groovy-all:pom:2.5.23"
   - "mvn://org.python:jython-standalone:2.7.4"
@@ -19,7 +16,6 @@ forms:
       type: "string"
       allow: ["ServiceAD1", "ServiceAD2"]
   - Password: { label: "Password", type: "string", inputType: "password" }
-  - updatePassword: { label: "Accept for Password update job run", type: boolean }
   Akeyless:
   - SecretType: { label: "Secret Type", type: "string", allow: ["generic", "password"], search: true }
   - SecretName: { label: "Name of the secret for Akeyless change", type: "string",  placeholder: "Place name here" }
@@ -105,10 +101,8 @@ flows:
     then:
       - log: "[INFO] Accepted for Password update ..."
     else:
-      - log: "[ERROR] Password update is not accepted ..."
-      - exit
+      - throw: "[ERROR] Password update is not accepted ..."
 
-  - log: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
           
@@ -125,10 +119,17 @@ flows:
       list: ${result.list}
       comma_list: ${result.comma_list}
 
-  - form: "Secrets will be update :: ${comma_list}"
+  - form: "Secrets : ${comma_list}"
     fields:
-      - updatePassword: { label: "Approve the list for password update", type: boolean }
+      - updatePassword: { label: "Approve the above list to be updated with provided password", type: boolean }
     
+  - if: ${Concord.updatePassword}
+    then:
+      - log: "[INFO] Accepted for Password update ..."
+    else:
+      - log: "[ERROR] Password update is not accepted ..."
+      - exit
+
   - call: update
     withItems: ${list}
 
