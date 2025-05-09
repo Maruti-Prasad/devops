@@ -116,15 +116,7 @@ flows:
     fields:
       - updatePassword: { label: "Approve the above list to be updated with provided password", type: boolean }
 
-  - set:
-     test : "${comma_list}.updatePassword"
-
-  - if: "${test}"
-    then:
-      - log: "[INFO] Accepted for Password update ..."
-    else:
-      - log: "[ERROR] Password update is not accepted ..."
-      - exit
+  - log: "Form response value: ${forms[comma_list].updatePassword}"
 
   - call: update
     withItems: ${list}
