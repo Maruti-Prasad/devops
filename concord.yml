@@ -116,31 +116,18 @@ flows:
       service: "${Concord.selectedService}"
 
   - script: python
-    body:
-      result.set("var", globals()[service]);
-    out:
-      list: ${result.var}
-
-  - script: python
     body: |
       service_list = globals()[service]
       comma_separated = ", ".join(service_list)
       result.set("list", service_list)  # Original list
       result.set("comma_list", comma_separated)  # Comma-separated string
     out:
-      lists: ${result.list}
+      list: ${result.list}
       comma_list: ${result.comma_list}
-
-  - log: "Original list: ${lists}"
-  - log: "Comma-separated list: ${comma_list}"
 
   - form: secretSelectionForm
     fields:
-      - selectedSecrets:
-          label: "Select a secret"
-          type: "string"
-          allow: "${list}"
-      - updatePassword: { label: "${list}", type: boolean }
+      - updatePassword: { label: "${comma_list}", type: boolean }
     
   - call: update
     withItems: ${list}
