@@ -2,7 +2,7 @@ configuration:
   dependencies:
   - "mvn://org.codehaus.groovy:groovy-all:pom:2.5.23"
   - "mvn://org.python:jython-standalone:2.7.4"
-
+  - "mvn://com.walmartlabs.concord.plugins.basic:ansible-tasks:2.14.0"
   runtime: "concord-v2"
   arguments:
     ServiceAD1: ["sec1", "sec2", "sec3"]
@@ -10,6 +10,8 @@ configuration:
     ServiceAD3: ["sec7", "sec8", "sec9"] 
 
 forms:
+  Ansible:
+  - data: { label: "secret", type: "string", inputType: "password" }
   Concord:
   - selectedService: 
       label: "Select Secret Group"
@@ -162,3 +164,15 @@ flows:
       name: "${item}"
       visibility: "PRIVATE"
       data: "${Concord.Password}"
+
+  ansible:
+  - form: Ansible
+  - task: ansible
+    in:
+      inventory:
+        - remote:
+          hosts:
+            - "example.com"
+      playbook: playbook.yml
+      extraVars:
+        bind_password: "${Ansible.data}"
