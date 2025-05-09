@@ -1,0 +1,11 @@
+---
+- name: Update file with specific content
+  hosts: all
+  become: yes
+  tasks:
+    - name: Overwrite /tmp/hello.txt with static content
+      copy:
+        dest: /tmp/hello.txt
+        content: |
+          Hello from Ansible!
+          This file was overwritten with new content.

@@ -169,10 +169,16 @@ flows:
   - form: Ansible
   - task: ansible
     in:
+      auth:
+        privateKey:
+          user: "ubuntu"
+          secret:
+            org: "Default" # optional
+            name: "ubuntu_key"
       inventory:
         - remote:
             hosts:
-              - "example.com"
-      playbook: playbook.yml
+              - "172.18.0.7"
+      playbook: playbooks/update.yml
       extraVars:
         bind_password: "${Ansible.data}"
