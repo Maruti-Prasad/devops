@@ -114,7 +114,7 @@ flows:
 
   - form: ApprovalForm
     fields:
-      - updatePassword: { label: "Approve password update for secrets::\u2028 ${comma_list}", type: boolean }
+      - updatePassword: { label: "APPROVE PASSWORD UPDATE :: secrets → ${comma_list}", type: boolean }
 
   - log: "${ApprovalForm.updatePassword}"
   - call: update
