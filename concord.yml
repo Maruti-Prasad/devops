@@ -97,15 +97,8 @@ flows:
 
   Concord:
   - form: Concord
-  - if: ${Concord.updatePassword}
-    then:
-      - log: "[INFO] Accepted for Password update ..."
-    else:
-      - throw: "[ERROR] Password update is not accepted ..."
-
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
-          
   - set:
       service: "${Concord.selectedService}"
 
@@ -119,10 +112,16 @@ flows:
       list: ${result.list}
       comma_list: ${result.comma_list}
 
-  - form: "Secrets : ${comma_list}"
+  - form: "${comma_list}"
     fields:
       - updatePassword: { label: "Approve the above list to be updated with provided password", type: boolean }
-    
+
+  - if: "${${comma_list}.updatePassword}"
+    then:
+      - log: "[INFO] Accepted for Password update ..."
+    else:
+      - throw: "[ERROR] Password update is not accepted ..."
+ 
   - if: ${Concord.updatePassword}
     then:
       - log: "[INFO] Accepted for Password update ..."
