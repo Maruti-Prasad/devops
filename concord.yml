@@ -112,11 +112,9 @@ flows:
       list: ${result.list}
       comma_list: ${result.comma_list}
 
-  - form: "${comma_list}"
+  - form: selectionform
     fields:
-      - updatePassword: { label: "Approve the above list to be updated with provided password", type: boolean }
-
-  - log: "Form response value: ${forms[comma_list].updatePassword}"
+      - updatePassword: { label: "${comma_list} Approve the above list to be updated with provided password", type: boolean }
 
   - call: update
     withItems: ${list}
