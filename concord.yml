@@ -140,7 +140,7 @@ flows:
           label: "Select a secret"
           type: "string"
           allow: "${list}"
-      - updatePassword: { label: "${comm_list}", type: boolean }
+      - updatePassword: { label: "${comma_list}", type: boolean }
     
   - call: update
     withItems: ${list}
