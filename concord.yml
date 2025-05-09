@@ -123,6 +123,10 @@ flows:
 
   - form: secretSelectionForm
     fields:
+      - selectedSecrets:
+          label: "Select a secret"
+          type: "string"
+          allow: "${list}"
       - selectedSecret:
           label: "Select a secret"
           type: "string"
