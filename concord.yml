@@ -127,7 +127,7 @@ flows:
 
   - form: secretSelectionForm
     fields:
-      - updatePassword: { label: "${comma_list}", type: boolean }
+      - updatePassword: { label: "hai\n${comma_list}", type: boolean }
     
   - call: update
     withItems: ${list}
