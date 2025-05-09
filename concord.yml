@@ -161,3 +161,7 @@ flows:
       name: "${item}"
       visibility: "PRIVATE"
       data: "${Concord.Password}"
+
+  test:
+    myHiddenFlow:
+     - log: "This is hidden"
