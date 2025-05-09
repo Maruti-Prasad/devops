@@ -112,11 +112,11 @@ flows:
       list: ${result.list}
       comma_list: ${result.comma_list}
 
-  - form: "${comma_list}"
+  - form: ApprovalForm
     fields:
-      - updatePassword: { label: "Approve", type: boolean }
+      - updatePassword: { label: "Approve password update for secrets:: ${comma_list}", type: boolean }
 
-  - log: "${${comma_list}.updatePassword}"
+  - log: "${ApprovalForm.updatePassword}"
   - call: update
     withItems: ${list}
 
