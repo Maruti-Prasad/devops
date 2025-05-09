@@ -124,7 +124,6 @@ flows:
   - script: python
     body:
       service_list = globals()[service]
-      # Join the list elements with commas
       comma_separated = ", ".join(service_list)
       result.set("list", service_list)  # Original list
       result.set("comma_list", comma_separated)  # Comma-separated string
