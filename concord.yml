@@ -121,10 +121,19 @@ flows:
     out:
       list: ${result.var}
 
-  - call: secret-update
+  - form: secretSelectionForm
+    fields:
+      - selectedSecret:
+          label: "Select a secret"
+          type: "string"
+          readonly: true,
+          placeholder: "${list}"
+      - updatePassword: { label: "Accept for Password update job run", type: boolean }
+    
+  - call: update
     withItems: ${list}
 
-  secret-update:
+  update:
   - task: concordSecrets
     in:
       action: getAsString
@@ -161,7 +170,3 @@ flows:
       name: "${item}"
       visibility: "PRIVATE"
       data: "${Concord.Password}"
-
-  test:
-    myHiddenFlow:
-     - log: "This is hidden"
