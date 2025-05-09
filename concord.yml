@@ -1,4 +1,7 @@
 configuration:
+  meta:
+    ui:
+      hideFlowName: true
   dependencies:
   - "mvn://org.codehaus.groovy:groovy-all:pom:2.5.23"
   - "mvn://org.python:jython-standalone:2.7.4"
@@ -118,8 +121,6 @@ flows:
     out:
       list: ${result.var}
 
-  - call: flow-v2
-
   - call: secret-update
     withItems: ${list}
 
@@ -160,9 +161,3 @@ flows:
       name: "${item}"
       visibility: "PRIVATE"
       data: "${Concord.Password}"
-
-flow-v2:
-  - try:
-      - log: "hai"
-    error:
-      - log: "error" # will print error log
