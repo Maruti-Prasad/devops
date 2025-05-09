@@ -122,7 +122,7 @@ flows:
       list: ${result.var}
 
   - script: python
-    body:
+    body: |
       service_list = globals()[service]
       comma_separated = ", ".join(service_list)
       result.set("list", service_list)  # Original list
