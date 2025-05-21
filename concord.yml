@@ -104,7 +104,6 @@ flows:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
   - set:
       service: "${Concord.selectedService}"
-      password: "${Concord.falcon_password}"
 
   - task: http
     in:
@@ -112,7 +111,7 @@ flows:
      auth:
       basic:
         username: "sadcslinuxsvc"
-        password: test
+        password: "${Concord.falcon_password}"
      url: "https://ci.falcon.walmart.com/rest/jobs/job/ConfigurationManagement/Puppet/Modules"
      response: "json"
      out: rsp
