@@ -106,14 +106,17 @@ flows:
       service: "${Concord.selectedService}"
       password: "${Concord.falcon_password}"
 
-  - script: python
-    body: |
-      url = "https://ci.falcon.walmart.com/rest/jobs/job/ConfigurationManagement/Puppet/Modules"
-      username = 'sadcslinuxsvc'
-      response = requests.get(url, auth=HTTPBasicAuth(username, password))
-      result.set("output", response)
-    out:
-      output: ${result.output}
+  - task: http
+    in:
+     method: GET
+     auth:
+      basic:
+        username: "sadcslinuxsvc"
+        password: test
+     url: "https://ci.falcon.walmart.com/rest/jobs/job/ConfigurationManagement/Puppet/Modules"
+     response: "json"
+     out: rsp
+  - log: "Out Response: ${rsp.success}"
 
   - script: python
     body: |
