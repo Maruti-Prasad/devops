@@ -18,6 +18,7 @@ forms:
       type: "string"
       allow: ["ServiceAD1", "ServiceAD2"]
   - Password: { label: "Password", type: "string", inputType: "password" }
+  - falcon_password: { label: "falcon_password", type: "string", inputType: "password" }
   Akeyless:
   - SecretType: { label: "Secret Type", type: "string", allow: ["generic", "password"], search: true }
   - SecretName: { label: "Name of the secret for Akeyless change", type: "string",  placeholder: "Place name here" }
@@ -103,6 +104,18 @@ flows:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
   - set:
       service: "${Concord.selectedService}"
+      password: "${Concord.falcon_password}"
+
+  - script: python
+    body: |
+      import requests
+      from requests.auth import HTTPBasicAuth
+      url = "https://ci.falcon.walmart.com/rest/jobs/job/ConfigurationManagement/Puppet/Modules"
+      username = 'sadcslinuxsvc'
+      response = requests.get(url, auth=HTTPBasicAuth(username, password))
+      result.set("output", response)
+    out:
+      output: ${result.output}
 
   - script: python
     body: |
