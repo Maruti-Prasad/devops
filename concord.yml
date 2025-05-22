@@ -108,14 +108,18 @@ flows:
   - task: http
     in:
      method: GET
+     response: string
+     logRequest: true
+     responseHeaders: true
+     debug: true # Enable debug mode to see all headers
+     logLevel: "DEBUG" # Verbose logging
      auth:
       basic:
         username: "sadcslinuxsvc"
-        password: "${Concord.falcon_password}"
+        password: "H3H3JQGHmE3W75vtQ"
      url: "https://ci.falcon.walmart.com/rest/jobs/job/ConfigurationManagement/Puppet/Modules"
-     response: "json"
-     out: rsp
-  - log: "Out Response: ${rsp.success}"
+    out: rsp 
+  - log: "Out Response:  ${rsp.requestInfo}"
 
   - script: python
     body: |
