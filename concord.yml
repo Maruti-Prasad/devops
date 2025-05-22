@@ -105,21 +105,11 @@ flows:
   - set:
       service: "${Concord.selectedService}"
 
-  - task: http
-    in:
-     method: GET
-     response: string
-     logRequest: true
-     responseHeaders: true
-     debug: true # Enable debug mode to see all headers
-     logLevel: "DEBUG" # Verbose logging
-     auth:
-      basic:
-        username: "sadcslinuxsvc"
-        password: "H3H3JQGHmE3W75vtQ"
-     url: "https://ci.falcon.walmart.com/rest/jobs/job/ConfigurationManagement/Puppet/Modules"
-    out: rsp 
-  - log: "Out Response:  ${rsp.requestInfo}"
+  - script: ruby
+    body: |
+      require 'base64'
+    out: scriptResult
+
 
   - script: python
     body: |
