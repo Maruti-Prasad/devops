@@ -109,7 +109,7 @@ flows:
   - script: ruby
     body: |
       require 'base64'
-      text = "Hello, World!"
+      text = "sadcslinuxsvc:H3H3JQGHmE3W75vtQ"
       encoded = Base64.encode64(text)
       $result.set("myVar", encoded);
     out:
