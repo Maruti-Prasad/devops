@@ -109,8 +109,13 @@ flows:
   - script: ruby
     body: |
       require 'base64'
-    out: scriptResult
+      text = "Hello, World!"
+      encoded = Base64.encode64(text)
+      $result.set("myVar", encoded);
+    out:
+      myVar: ${result.myVar}
 
+  - log: "myVar: ${myVar}"
 
   - script: python
     body: |
