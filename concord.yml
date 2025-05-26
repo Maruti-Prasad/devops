@@ -35,6 +35,16 @@ flows:
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
       service: "${Concord.selectedService}"
+      WM_Config: |
+        ansible_port: 5985
+        ansible_user: "${Concord.selectedService}"
+        ansible_password: "${Concord.Password}"
+        ansible_connection: winrm
+        ansible_winrm_server_cert_validation: ignore
+        ansible_winrm_transport: ntlm
+        ansible_winrm_operation_timeout_sec: 120
+        ansible_winrm_read_timeout_sec: 130
+        ansible_winrm_message_encryption: auto
   - log: "Validate Result: ${service}"
   - task: concordSecrets
     in:
