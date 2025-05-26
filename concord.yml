@@ -1,123 +1,31 @@
 configuration:
   dependencies:
-  - "mvn://org.codehaus.groovy:groovy-all:pom:2.5.23"
+  - mvn://com.walmartlabs.concord.plugins:akeyless-task:2.5.0
   - "mvn://org.python:jython-standalone:2.7.4"
+  - mvn://com.walmartlabs.concord.plugins.basic:ansible-tasks:latest
   - "mvn://org.jruby:jruby:9.1.17.0"
-  - "mvn://com.walmartlabs.concord.plugins.basic:ansible-tasks:2.14.0"
+
   runtime: "concord-v2"
   arguments:
-    ServiceAD1: ["sec1", "sec2", "sec3"]
-    ServiceAD2: ["sec4", "sec5", "sec6"] 
-    ServiceAD3: ["sec7", "sec8", "sec9"] 
-
+    saDCSlinuxSVC: ["saDCSlinuxSVC_test", "sadcslinuxsvc_pass_test", "saDCSlinuxSVC_user_test", "looper_http_api_token_test","osp_ad_svc_password_test"]
+    SVCWindowsCM: ["svcWindowsCM_password_test"]
+    SVC_Puppeteer: ["svc_pass_test"]
+    SVCpuptlmtd: ["svcpuptlmtd_test"]
 forms:
-  Ansible:
-  - data: { label: "secret", type: "string", inputType: "password" }
   Concord:
-  - selectedService: 
+  - selectedService:
       label: "Select Secret Group"
       type: "string"
-      allow: ["ServiceAD1", "ServiceAD2"]
-  - Password: { label: "Password", type: "string", inputType: "password" }
-  - falcon_password: { label: "falcon_password", type: "string", inputType: "password" }
-  Akeyless:
-  - SecretType: { label: "Secret Type", type: "string", allow: ["generic", "password"], search: true }
-  - SecretName: { label: "Name of the secret for Akeyless change", type: "string",  placeholder: "Place name here" }
-  - data: { label: "secret", type: "string", inputType: "password" }
-  - updatePassword: { label: "Accept for Password update job run", type: boolean }
+      allow: ["saDCSlinuxSVC", "SVCWindowsCM","SVC_Puppeteer","SVCpuptlmtd"]
+  - Password: { label: "Password", type: "string", inputType: "password" }  
 
 flows:
-  Akeyless:
-  - form: Akeyless
-  - if: ${Akeyless.updatePassword}
-    then:
-      - log: "[INFO] Accepted for Password update ..."
-    else:
-      - throw: "[ERROR] Password update is not accepted ..."
-
-  - task: http
-    in:
-      method: POST
-      headers:
-        Content-Type: "application/json"
-      url: "https://api.akeyless.io/auth"
-      ignoreErrors: false
-      request: json
-      response: json
-      body: |
-        {
-            "access-type": "api_key",
-            "access-id": "p-l391pmos0f0kam",
-            "access-key": "suUzBZTfp5yEBEPVhe919W5RFVsRR5mCBZMy2IoVxok="
-        }
-    out: response
-
-  - log: "${response.content.token}"
-  - if: ${Akeyless.SecretType == "generic"}
-    then:
-      - task: http
-        in:
-          method: POST
-          headers:
-            Content-Type: "application/json"
-            Authorization: "Bearer ${response.content.token}"
-          url: "https://api.akeyless.io/create-secret"
-          ignoreErrors: false
-          request: json
-          response: json
-          body: |
-            {
-                "name": "/prod/test/${Akeyless.SecretName}",
-                "value": "${Akeyless.data}",
-                "type": "generic",
-                "token": "${response.content.token}",
-                "keep-prev-version": "true"
-            }
-        out: response
-    else:
-      - task: http
-        in:
-          method: POST
-          headers:
-            Content-Type: "application/json"
-            Authorization: "Bearer ${response.content.token}"
-          url: "https://api.akeyless.io/create-secret"
-          ignoreErrors: false
-          request: json
-          response: json
-          body: |
-            {
-                "name": "/prod/test/${Akeyless.SecretName}",
-                "password": "${Akeyless.data}",
-                "type": "password",
-                "token": "${response.content.token}",
-                "keep-prev-version": "true"
-            }
-        out: response
-
-  - if: ${response.statusCode != "200"}
-    then:
-      - throw: "${Akeyless.SecretName} Failed to update :: ${response.error}"
-
-  Concord:
+  default:
   - form: Concord
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
-  - set:
       service: "${Concord.selectedService}"
-
-  - script: ruby
-    body: |
-      require 'base64'
-      v = $execution.variables().get('service')
-      text = "sadcslinuxsvc:" + v
-      encoded = Base64.encode64(text)
-      $result.set("myVar", encoded);
-    out:
-      myVar: ${result.myVar}
-
-  - log: "myVar: ${myVar}"
-
+  - log: "Validate Result: ${service}"
   - script: python
     body: |
       service_list = globals()[service]
@@ -126,22 +34,101 @@ flows:
       result.set("comma_list", comma_separated)  # Comma-separated string
     out:
       list: ${result.list}
-      comma_list: ${result.comma_list}
-
+      comma_list: ${result.comma_list
   - form: ApprovalForm
     fields:
       - approval: { label: "Approve password update for: [secrets] → ${comma_list}", type: boolean }
-
   - if: ${ApprovalForm.approval}
     then:
       - log: "[INFO] Accepted for Password update ..."
     else:
       - throw: "[ERROR] Password update is not accepted ..."
 
-  - call: update
-    withItems: ${list}
+  - if: ${service == "SVCWindowsCM"}
+    then: 
+      - call: SVCWindowsCM
+        in:
+          user: "svcwindowscm"
+      - call: concord
+        withItems: ${list}
+  - if: ${service == "saDCSlinuxSVC"}
+    then:
+      - call: SVCWindowsCM
+        in:
+          user: "sadcslinuxsvc_test"
+      - call: concord
+        withItems: ${list}
+  - if: ${service == "Puppeteer"}
+    then: 
+      - call: Akeyless
+        withItems: ${list}
+  - if: ${service == "SVCpuptlmtd"}
+    then:
+      - call: Akeyless
+        withItems: ${list}
 
-  update:
+  saDCSlinuxSVC:
+  - task: concordSecrets
+    in:
+      action: getAsString
+      name: sadcslinuxsvc_pass_test
+      ignoreErrors: false
+    out: result 
+  - log: "Validate Result: ${result}"
+  - set:
+      svc_pass: "${result.data}"
+  - script: ruby
+    body: |
+      require 'base64'
+      v = $execution.variables().get('svc_pass')
+      text = "sadcslinuxsvc:" + v
+      encoded = Base64.encode64(text)
+      $result.set("myVar", encoded);
+    out:
+      svc_base64: ${result.myVar}
+  - log: "${svc_base64}"
+
+#Akeyless Flow
+  SVCWindowsCM:
+  - task: concordSecrets
+    in:
+      action: getAsString
+      name: sadcslinuxsvc_pass
+      ignoreErrors: false
+    out: result     
+  - log: "Validate Result: ${result}"
+
+  - task: akeyless
+    in:
+      action: updateSecret
+      apiBasePath: "https://akeyless.gw.prod.glb.us.walmart.net:8080/v2"
+      auth:
+        ldap:
+          accessId: p-8dydleky17zq
+          credentials:
+            username: saDCSlinuxSVC # change SVC account used, must be member of ConfigurationManagement AD group
+            password: ${result.data}     
+      path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet/PE/${user}"
+      value: "${Concord.Password}"
+
+#puppet Flow
+  SVCpuptlmtd:
+  - task: akeyless
+    in:
+      action: updateSecret
+      apiBasePath: "https://akeyless.gw.prod.glb.us.walmart.net:8080/v2"
+      auth:
+        ldap:
+          accessId: p-8dydleky17zq
+          credentials:
+            username: saDCSlinuxSVC # change SVC account used, must be member of ConfigurationManagement AD group
+            password: ${result.data}     
+      path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet/PE/svcwindowscm_test"
+      value: "${Akeyless.data}"
+
+#Concord Flow
+  concord:
+  - log: "Get existing secret for ${item}"
   - task: concordSecrets
     in:
       action: getAsString
@@ -178,21 +165,3 @@ flows:
       name: "${item}"
       visibility: "PRIVATE"
       data: "${Concord.Password}"
-
-  ansible:
-  - form: Ansible
-  - task: ansible
-    in:
-      auth:
-        privateKey:
-          user: "ubuntu"
-          secret:
-            org: "Default" # optional
-            name: "ubuntu_key"
-      inventory:
-        - remote:
-            hosts:
-              - "172.18.0.7"
-      playbook: playbooks/update.yml
-      extraVars:
-        bind_password: "${Ansible.data}"
