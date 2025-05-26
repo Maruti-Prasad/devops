@@ -1,10 +1,9 @@
 configuration:
   dependencies:
-  - "mvn://org.codehaus.groovy:groovy-all:pom:2.5.23"
+  - mvn://com.walmartlabs.concord.plugins:akeyless-task:2.5.0
   - "mvn://org.python:jython-standalone:2.7.4"
+  - mvn://com.walmartlabs.concord.plugins.basic:ansible-tasks:latest
   - "mvn://org.jruby:jruby:9.1.17.0"
-  - "mvn://com.walmartlabs.concord.plugins.basic:ansible-tasks:2.14.0"
-
 
   runtime: "concord-v2"
   arguments:
@@ -35,7 +34,7 @@ flows:
       result.set("comma_list", comma_separated)  # Comma-separated string
     out:
       list: ${result.list}
-      comma_list: ${result.comma_list}
+      comma_list: ${result.comma_list}     
   - form: ApprovalForm
     fields:
       - approval: { label: "Approve password update for: [secrets] → ${comma_list}", type: boolean }
@@ -44,6 +43,26 @@ flows:
       - log: "[INFO] Accepted for Password update ..."
     else:
       - throw: "[ERROR] Password update is not accepted ..."
+  
+  - task: concordSecrets
+    in:
+      action: getAsString
+      name: sadcslinuxsvc_pass
+      ignoreErrors: false
+    out: result 
+  - log: "Validate Result: ${result}"
+  - set:
+      svc_pass: "${result.data}"
+  - script: ruby
+    body: |
+      require 'base64'
+      v = $execution.variables().get('svc_pass')
+      text = "sadcslinuxsvc:" + v
+      encoded = Base64.encode64(text)
+      $result.set("myVar", encoded);
+    out:
+      svc_base64: ${result.myVar}
+  - log: "${svc_base64}"
 
   - if: ${service == "SVCWindowsCM"}
     then: 
@@ -51,6 +70,8 @@ flows:
         in:
           user: "svcwindowscm"
       - call: concord
+        in:
+          base64_val: "${svc_base64}"
         withItems: ${list}
   - if: ${service == "saDCSlinuxSVC"}
     then:
@@ -67,27 +88,6 @@ flows:
     then:
       - call: Akeyless
         withItems: ${list}
-
-  saDCSlinuxSVC:
-  - task: concordSecrets
-    in:
-      action: getAsString
-      name: sadcslinuxsvc_pass_test
-      ignoreErrors: false
-    out: result 
-  - log: "Validate Result: ${result}"
-  - set:
-      svc_pass: "${result.data}"
-  - script: ruby
-    body: |
-      require 'base64'
-      v = $execution.variables().get('svc_pass')
-      text = "sadcslinuxsvc:" + v
-      encoded = Base64.encode64(text)
-      $result.set("myVar", encoded);
-    out:
-      svc_base64: ${result.myVar}
-  - log: "${svc_base64}"
 
 #Akeyless Flow
   SVCWindowsCM:
@@ -150,19 +150,10 @@ flows:
       data: "${result.data}"
       createIfMissing: true
 
-  - log: "print backup secret"
-  - task: concordSecrets
-    in:
-      action: getAsString
-      name: "${item}_${date}"
-      ignoreErrors: false
-    out: backup
-  - log: "Validate Result: ${backup.data}"
-
   - task: concordSecrets
     in:
       action: update
       ignoreErrors: false
       name: "${item}"
       visibility: "PRIVATE"
-      data: "${Concord.Password}"
+      data: "${base64_val}"
