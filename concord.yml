@@ -8,9 +8,19 @@ configuration:
   runtime: "concord-v2"
   arguments:
     saDCSlinuxSVC: ["saDCSlinuxSVC_test", "sadcslinuxsvc_pass_test", "saDCSlinuxSVC_user_test", "looper_http_api_token_test","osp_ad_svc_password_test"]
-    SVCWindowsCM: ["svcWindowsCM_password_test"]
+    SVCWindowsCM: ["svcWindowsCM_test", "svcWindowsCM_password_test"]
     SVC_Puppeteer: ["svc_pass_test"]
     SVCpuptlmtd: ["svcpuptlmtd_test"]
+    WM_Config: |
+      ansible_port: 5985
+      ansible_user: "SVCWindowsCM"
+      ansible_password: "${Concord.Password}"
+      ansible_connection: winrm
+      ansible_winrm_server_cert_validation: ignore
+      ansible_winrm_transport: ntlm
+      ansible_winrm_operation_timeout_sec: 120
+      ansible_winrm_read_timeout_sec: 130
+      ansible_winrm_message_encryption: auto
 forms:
   Concord:
   - selectedService:
@@ -65,32 +75,49 @@ flows:
   - log: "${svc_base64}"
 
   - if: ${service == "SVCWindowsCM"}
-    then: 
-      - call: SVCWindowsCM
+    then:
+      - call: Akeyless
         in:
-          user: "svcwindowscm"
-      - call: concord
+          path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet/PE"
+          user: "svcwindowscm_test"
+      - call: Config
         in:
-          base64_val: "${svc_base64}"
+          config: "${WM_Config}"
         withItems: ${list}
+
   - if: ${service == "saDCSlinuxSVC"}
     then:
-      - call: SVCWindowsCM
-        in:
-          user: "sadcslinuxsvc_test"
       - call: concord
+        in:
+          base64_val: "${svc_base64}"     
         withItems: ${list}
+      - call: Akeyless
+        in:
+          path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet/PE"
+          user: "sadcslinuxsvc_test"
   - if: ${service == "Puppeteer"}
     then: 
       - call: Akeyless
-        withItems: ${list}
+        in:
+          path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet_api"
+          user: "svc_pass_test"
   - if: ${service == "SVCpuptlmtd"}
     then:
       - call: Akeyless
-        withItems: ${list}
+        in:
+          path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet/PE"
+          user: "svcpuptlmtd_test"
 
+  Config:
+  - task: concordSecrets
+    in:
+      action: update
+      ignoreErrors: false
+      name: "${item}"
+      visibility: "PRIVATE"
+      data: "${base64_val}"
 #Akeyless Flow
-  SVCWindowsCM:
+  Akeyless:
   - task: concordSecrets
     in:
       action: getAsString
@@ -109,9 +136,8 @@ flows:
           credentials:
             username: saDCSlinuxSVC # change SVC account used, must be member of ConfigurationManagement AD group
             password: ${result.data}     
-      path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet/PE/${user}"
+      path: "${path}/${user}"
       value: "${Concord.Password}"
-
 #puppet Flow
   SVCpuptlmtd:
   - task: akeyless
