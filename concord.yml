@@ -15,7 +15,6 @@ configuration:
     WM_Config: |
       ansible_port: 5985
       ansible_user: "SVCWindowsCM"
-      ansible_password: "${Concord.Password}"
       ansible_connection: winrm
       ansible_winrm_server_cert_validation: ignore
       ansible_winrm_transport: ntlm
