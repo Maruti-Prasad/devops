@@ -43,3 +43,11 @@ flows:
       name: "test12"
       visibility: "PRIVATE"
       data: "${WM_Config}"
+  - task: concordSecrets
+    in:
+      action: getAsString
+      name: "test12"
+      ignoreErrors: false
+    out: result
+  - log: "Validate Result: ${result}"
+
