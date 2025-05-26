@@ -35,7 +35,7 @@ flows:
       result.set("comma_list", comma_separated)  # Comma-separated string
     out:
       list: ${result.list}
-      comma_list: ${result.comma_list
+      comma_list: ${result.comma_list}
   - form: ApprovalForm
     fields:
       - approval: { label: "Approve password update for: [secrets] → ${comma_list}", type: boolean }
