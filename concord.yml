@@ -39,7 +39,7 @@ flows:
 
   - form: ApprovalForm
     fields:
-      - approval: { label: "Approve password update for: * ", type: boolean}
+      - approval: { label: "Approve password update for: *U+1F534 ", type: boolean}
 
   - task: concordSecrets
     in:
