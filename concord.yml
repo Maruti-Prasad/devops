@@ -12,15 +12,6 @@ configuration:
     SVCWindowsCM: ["svcWindowsCM_test", "svcWindowsCM_password_test"]
     SVC_Puppeteer: ["svc_pass_test"]
     SVCpuptlmtd: ["svcpuptlmtd_test"]
-    WM_Config: |
-      ansible_port: 5985
-      ansible_user: "SVCWindowsCM"
-      ansible_connection: winrm
-      ansible_winrm_server_cert_validation: ignore
-      ansible_winrm_transport: ntlm
-      ansible_winrm_operation_timeout_sec: 120
-      ansible_winrm_read_timeout_sec: 130
-      ansible_winrm_message_encryption: auto
 forms:
   Concord:
   - selectedService:
@@ -45,7 +36,11 @@ flows:
         ansible_winrm_operation_timeout_sec: 120
         ansible_winrm_read_timeout_sec: 130
         ansible_winrm_message_encryption: auto
-  - log: "Validate Result: ${service}"
+
+  - form: ApprovalForm
+    fields:
+      - approval: { label: "Approve password update for: [secrets] → ${comma_list}", type: boolean }
+
   - task: concordSecrets
     in:
       action: update
