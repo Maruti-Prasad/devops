@@ -11,6 +11,7 @@ configuration:
       akeyless: ["looper_http_api_token_test", "osp_ad_svc_password_test"]
     SVCWindowsCM: 
       concord: ["svcWindowsCM_test", "svcWindowsCM_password_test"]
+      akeyless: ["svcWindowsCM_test1", "svcWindowsCM_password_test1"]
     SVC_Puppeteer: 
       concord: ["svc_pass_test"]
     SVCpuptlmtd: 
@@ -89,11 +90,11 @@ flows:
       - call: Akeyless
         in:
           path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet/PE"
-          user: "svcwindowscm_test"
+          user: "${akeyless_list}"
       - call: WMConfig
         in:
           config: "${WM_Config}"
-        withItems: ${list}
+        withItems: "${concord_list}"
 
   - if: ${service == "saDCSlinuxSVC"}
     then:
