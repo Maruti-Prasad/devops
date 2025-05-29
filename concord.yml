@@ -39,7 +39,7 @@ flows:
 
   - form: ApprovalForm
     fields:
-      - approval: { label: "<span style='color: red;'>*</span> Approve this request</span> Approve password update for: ", type: boolean}
+      - approval: { label: "Approve password update for: * ", type: boolean}
 
   - task: concordSecrets
     in:
