@@ -48,7 +48,7 @@ flows:
         ansible_winrm_message_encryption: auto
   - script: python
     body: |
-      service_list = globals()[service]
+      svc_data = globals()[service]
       concord_list = svc_data.get("concord", [])
       akeyless_list = svc_data.get("akeyless", [])
       result.set("concord_list", concord_list)
