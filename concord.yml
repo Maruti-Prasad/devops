@@ -48,12 +48,8 @@ flows:
       svc_data = globals()[service]
       concord_list = svc_data.get("concord")
       akeyless_list = svc_data.get("akeyless")
-      concord_list = concord_list
-      akeyless_list = akeyless_list
-
       comma_concord = ", ".join(concord_list) if concord_list else None
       comma_akeyless = ", ".join(akeyless_list) if akeyless_list else None
-
       result.set("concord_list", concord_list)
       result.set("akeyless_list", akeyless_list)
       result.set("comma_concord", concord_list)
