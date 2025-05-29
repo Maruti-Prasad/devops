@@ -46,20 +46,22 @@ flows:
   - script: python
     body: |
       svc_data = globals()[service]
-      concord_list = None
-      akeyless_list = None
-      comma_concord = None
-      comma_akeyless = None
-      if "concord" in svc_data:
-        concord_list = svc_data.get("concord")
+      concord_list = svc_data.get("concord")
+      akeyless_list = svc_data.get("akeyless")
+      if concord_list:
         comma_concord = ", ".join(concord_list)
-        result.set("concord_list", concord_list)
-        result.set("comma_concord", concord_list)
-      if "akeyless" in svc_data:
-        akeyless_list = svc_data.get("akeyless")
+      else:
+        concord_list = []
+        comma_concord = "N/A"
+      if akeyless_list:
         comma_akeyless = ", ".join(akeyless_list)
-        result.set("akeyless_list", akeyless_list)
-        result.set("comma_akeyless", akeyless_list)
+       else:
+        akeyless_list = []
+        comma_akeyless = "N/A"
+      result.set("concord_list", concord_list)
+      result.set("akeyless_list", akeyless_list)
+      result.set("comma_concord", comma_concord)
+      result.set("comma_akeyless", comma_akeyless)
     out:
       concord_list: ${result.concord_list}
       akeyless_list: ${result.akeyless_list}
