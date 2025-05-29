@@ -11,13 +11,10 @@ configuration:
       akeyless: ["looper_http_api_token_test", "osp_ad_svc_password_test"]
     SVCWindowsCM: 
       concord: ["svcWindowsCM_test", "svcWindowsCM_password_test"]
-      akeyless: []
     SVC_Puppeteer: 
       concord: ["svc_pass_test"]
-      akeyless: []
     SVCpuptlmtd: 
       concord: ["svcpuptlmtd_test"]
-      akeyless: []
 
 forms:
   Ansible:
