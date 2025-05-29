@@ -68,7 +68,7 @@ flows:
             (comma_concord_list != null && comma_concord_list != "" ? "˚[Concord] → " + comma_concord_list : "") +
             (comma_akeyless_list != null && comma_akeyless_list != "" ? " [Akeyless] → " + comma_akeyless_list : "")
           }
-    type: boolean
+          type: boolean
   - if: ${ApprovalForm.approval}
     then:
       - log: "[INFO] Accepted for Password update ..."
