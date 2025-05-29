@@ -70,7 +70,11 @@ flows:
 
   - form: ApprovalForm
     fields:
-      - approval: { label: "˚Approve password update for ::: [Concord] → ${comma_concord_list} \n [Akeyless] → ${comma_akeyless_list}", type: boolean }
+      - approval:
+          label: >
+            ˚Approve password update for: [Concord] → ${comma_concord_list}
+            [Akeyless] → ${comma_akeyless_list}
+          type: boolean
   - if: ${ApprovalForm.approval}
     then:
       - log: "[INFO] Accepted for Password update ..."
