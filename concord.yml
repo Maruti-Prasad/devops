@@ -55,10 +55,6 @@ flows:
       result.set("akeyless_list", akeyless_list)
       result.set("comma_concord", ", ".join(concord_list))
       result.set("comma_akeyless", ", ".join(akeyless_list))
-
-      comma_separated = ", ".join(service_list)
-      result.set("list", service_list)  # Original list
-      result.set("comma_list", comma_separated)  # Comma-separated string
     out:
       concord_list: ${result.concord_list}
       akeyless_list: ${result.akeyless_list}
