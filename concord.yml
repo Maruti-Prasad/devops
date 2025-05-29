@@ -55,7 +55,7 @@ flows:
         comma_concord = "N/A"
       if akeyless_list:
         comma_akeyless = ", ".join(akeyless_list)
-       else:
+      else:
         akeyless_list = []
         comma_akeyless = "N/A"
       result.set("concord_list", concord_list)
