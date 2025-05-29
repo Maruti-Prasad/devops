@@ -1,18 +1,27 @@
 configuration:
   dependencies:
-  - "mvn://org.codehaus.groovy:groovy-all:pom:2.5.23"
+  - mvn://com.walmartlabs.concord.plugins:akeyless-task:2.5.0
   - "mvn://org.python:jython-standalone:2.7.4"
+  - mvn://com.walmartlabs.concord.plugins.basic:ansible-tasks:latest
   - "mvn://org.jruby:jruby:9.1.17.0"
-  - "mvn://com.walmartlabs.concord.plugins.basic:ansible-tasks:2.14.0"
-
-
   runtime: "concord-v2"
   arguments:
-    saDCSlinuxSVC: ["saDCSlinuxSVC_test", "sadcslinuxsvc_pass_test", "saDCSlinuxSVC_user_test", "looper_http_api_token_test","osp_ad_svc_password_test"]
-    SVCWindowsCM: ["svcWindowsCM_test", "svcWindowsCM_password_test"]
-    SVC_Puppeteer: ["svc_pass_test"]
-    SVCpuptlmtd: ["svcpuptlmtd_test"]
+    saDCSlinuxSVC: 
+      concord: ["saDCSlinuxSVC_test", "sadcslinuxsvc_pass_test", "saDCSlinuxSVC_user_test"]
+      akeyless: ["looper_http_api_token_test", "osp_ad_svc_password_test"]
+    SVCWindowsCM: 
+      concord: ["svcWindowsCM_test", "svcWindowsCM_password_test"]
+      akeyless: []
+    SVC_Puppeteer: 
+      concord: ["svc_pass_test"]
+      akeyless: []
+    SVCpuptlmtd: 
+      concord: ["svcpuptlmtd_test"]
+      akeyless: []
+
 forms:
+  Ansible:
+  - data: { label: "password", type: "string", inputType: "password" }
   Concord:
   - selectedService:
       label: "Select Secret Group"
@@ -26,6 +35,7 @@ flows:
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
       service: "${Concord.selectedService}"
+      svc_pass: "${Concord.Password}"
       WM_Config: |
         ansible_port: 5985
         ansible_user: "${Concord.selectedService}"
@@ -36,23 +46,194 @@ flows:
         ansible_winrm_operation_timeout_sec: 120
         ansible_winrm_read_timeout_sec: 130
         ansible_winrm_message_encryption: auto
+  - script: python
+    body: |
+      service_list = globals()[service]
+      concord_list = svc_data.get("concord", [])
+      akeyless_list = svc_data.get("akeyless", [])
+      result.set("concord_list", concord_list)
+      result.set("akeyless_list", akeyless_list)
+      result.set("comma_concord", ", ".join(concord_list))
+      result.set("comma_akeyless", ", ".join(akeyless_list))
+
+      comma_separated = ", ".join(service_list)
+      result.set("list", service_list)  # Original list
+      result.set("comma_list", comma_separated)  # Comma-separated string
+    out:
+      concord_list: ${result.concord_list}
+      akeyless_list: ${result.akeyless_list}
+      comma_concord_list: ${result.comma_concord}     
+      comma_akeyless_list: ${result.comma_akeyless}
 
   - form: ApprovalForm
     fields:
-      - approval: { label: "Approve password update for: *U+1F534 ", type: boolean}
+      - approval: { label: "˚Approve password update for: [Concord] → ${comma_concord_list} [Akeyless] → ${comma_akeyles_list}", type: boolean }
+  - if: ${ApprovalForm.approval}
+    then:
+      - log: "[INFO] Accepted for Password update ..."
+    else:
+      - throw: "[ERROR] Password update is not accepted ..."
 
+  - task: concordSecrets
+    in:
+      action: getAsString
+      name: sadcslinuxsvc_pass
+      ignoreErrors: false
+    out: sadcs_pass
+
+  - if: ${service == "SVCWindowsCM"}
+    then:
+      - call: Akeyless
+        in:
+          path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet/PE"
+          user: "svcwindowscm_test"
+      - call: WMConfig
+        in:
+          config: "${WM_Config}"
+        withItems: ${list}
+
+  - if: ${service == "saDCSlinuxSVC"}
+    then:
+      - script: ruby
+        body: |
+          require 'base64'
+          v = $execution.variables().get('svc_pass')
+          text = "sadcslinuxsvc:" + v
+          encoded = Base64.encode64(text)
+          $result.set("myVar", encoded);
+        out:
+          svc_base64: ${result.myVar}
+      - call: concord
+        in:
+          base64_val: "${svc_base64}"     
+        withItems: ${list}
+      - call: Akeyless
+        in:
+          path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet/PE"
+          user: "sadcslinuxsvc_test"
+
+  - if: ${service == "SVC_Puppeteer"}
+    then: 
+      - call: Akeyless
+        in:
+          path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet_api"
+          user: "svc_pass_test"
+
+  - if: ${service == "SVCpuptlmtd"}
+    then:
+      - call: Akeyless
+        in:
+          path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet/PE"
+          user: "svcpuptlmtd_test"
+
+  WMConfig:
+  - task: concordSecrets
+    in:
+      action: getAsString
+      name: ${item}
+      ignoreErrors: false
+    out: result
+  - if: ${result.status != "OK"}
+    then:
+      - throw: "${item} 'NOT_FOUND'"
+  - task: concordSecrets
+    in:
+      action: create
+      ignoreErrors: false
+      name: "${item}_${date}"
+      data: "${result.data}"
+      createIfMissing: true
   - task: concordSecrets
     in:
       action: update
       ignoreErrors: false
-      name: "test12"
+      name: "${item}"
       visibility: "PRIVATE"
-      data: "${WM_Config}"
+      data: "${config}"
   - task: concordSecrets
     in:
       action: getAsString
-      name: "test12"
+      name: "${item}"
       ignoreErrors: false
     out: result
   - log: "Validate Result: ${result}"
+     
+#Akeyless Flow
+  Akeyless:
+  - task: akeyless
+    in:
+      action: updateSecret
+      apiBasePath: "https://akeyless.gw.prod.glb.us.walmart.net:8080/v2"
+      auth:
+        ldap:
+          accessId: p-8dydleky17zq
+          credentials:
+            username: saDCSlinuxSVC # change SVC account used, must be member of ConfigurationManagement AD group
+            password: ${sadcs_pass.data}     
+      path: "${path}/${user}"
+      value: "${Concord.Password}"
+#puppet Flow
+  SVCpuptlmtd:
+  - task: akeyless
+    in:
+      action: updateSecret
+      apiBasePath: "https://akeyless.gw.prod.glb.us.walmart.net:8080/v2"
+      auth:
+        ldap:
+          accessId: p-8dydleky17zq
+          credentials:
+            username: saDCSlinuxSVC # change SVC account used, must be member of ConfigurationManagement AD group
+            password: ${sadcs_pass.data}     
+      path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet/PE/svcwindowscm_test"
+      value: "${Akeyless.data}"
+#Concord Flow
+  concord:
+  - task: concordSecrets
+    in:
+      action: getAsString
+      name: ${item}
+      ignoreErrors: false
+    out: result
+  - log: "Old Value: ${result}"
+  - if: ${result.status != "OK"}
+    then:
+      - throw: "${item} 'NOT_FOUND'"
+  - task: concordSecrets
+    in:
+      action: create
+      ignoreErrors: false
+      name: "${item}_${date}"
+      data: "${result.data}"
+      createIfMissing: true
+  - task: concordSecrets
+    in:
+      action: update
+      ignoreErrors: false
+      name: "${item}"
+      visibility: "PRIVATE"
+      data: "${base64_val}"
+  - task: concordSecrets
+    in:
+      action: getAsString
+      name: ${item}
+      ignoreErrors: false
+    out: newresult  
+  - log: "New Value: ${newresult}"
 
+  Ansible:
+  - form: Ansible
+  - task: ansible
+    in:
+      auth:
+        privateKey:
+          user: "root"
+          secret:
+            org: "ComputeManagement" # optional
+            name: "config_mgmt_ansible"
+      inventory:
+        - remote:
+            hosts:
+              - "pe-metrics.wal-mart.com"
+      playbook: playbooks/update.yml
+      extraVars:
+        bind_password: "${Ansible.data}"
