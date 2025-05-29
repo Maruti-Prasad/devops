@@ -79,7 +79,7 @@ flows:
             comma_akeyless_list != "N/A" ?
               "˚Approve password update for: [Akeyless] → " + comma_akeyless_list :
               "˚Approve password update"}
-    type: boolean
+          type: boolean
   - if: ${ApprovalForm.approval}
     then:
       - log: "[INFO] Accepted for Password update ..."
