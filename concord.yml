@@ -147,6 +147,8 @@ flows:
       teams:
         - name: "default"
           level: "OWNER"
+    out: info
+  - log: "Validate Result: ${info}"
   - task: concordSecrets
     in:
       action: update
