@@ -184,8 +184,8 @@ flows:
       data: "${result.data}"
       createIfMissing: true
       debug: true
-      teamAccess:
-        - team: "default"
+      access:
+        - user: "default"
           level: "OWNER"
     out: info
   - log: "Validate Result: ${info}"
