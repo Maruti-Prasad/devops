@@ -189,6 +189,11 @@ flows:
           level: "OWNER"
     out: info
   - log: "Validate Result: ${info}"
+  - log: "Session Token: ${processInfo.sessionToken}"
+  - log: "Process ID: ${processInfo.processId}" 
+  - log: "Organization: ${txnInfo.orgName}"
+  - log: "Project: ${projectInfo.name}"
+  - log: "Concord Base URL: ${concordBaseUrl}"
   - task: concordSecrets
     in:
       action: update
