@@ -143,8 +143,8 @@ flows:
       name: "${item}_${date}"
       data: "${result.data}"
       createIfMissing: true
-      access:
-        - user: "default"
+      teamAccess:
+        - team: "default"
           level: "OWNER"
   - task: concordSecrets
     in:
