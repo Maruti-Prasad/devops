@@ -193,10 +193,10 @@ flows:
   - log: "Concord Base URL: ${concordBaseUrl}"
   - task: http
     in:
-      url: "${concordBaseUrl}/api/v1/org/Default/secret/${item}_${date}/access/team"
+      url: "http://172.18.0.4:8001/api/v1/org/Default/secret/${item}_${date}/access/team"
       method: POST
       headers:
-        Authorization: "${context.sessionToken}"
+        Authorization: "${processInfo.sessionToken}"
         Content-Type: "application/json"
       body:
         teamName: "default"
