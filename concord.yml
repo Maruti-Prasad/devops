@@ -7,7 +7,7 @@ configuration:
   runtime: "concord-v2"
   arguments:
     saDCSlinuxSVC: 
-      concord: ["saDCSlinuxSVC_test", "sadcslinuxsvc_pass_test", "saDCSlinuxSVC_user_test"]
+      concord: ["saDCSlinuxSVC_test", "saDCSlinuxSVC_user_test"]
       akeyless: ["looper_http_api_token_test", "osp_ad_svc_password_test"]
     SVCWindowsCM: 
       concord: ["svcWindowsCM_test", "svcWindowsCM_password_test"]
@@ -111,10 +111,6 @@ flows:
         in:
           base64_val: "${svc_base64}"     
         withItems: ${list}
-      - call: Akeyless
-        in:
-          path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet/PE"
-          user: "sadcslinuxsvc_test"
 
   - if: ${service == "SVC_Puppeteer"}
     then: 
@@ -147,6 +143,9 @@ flows:
       name: "${item}_${date}"
       data: "${result.data}"
       createIfMissing: true
+      access:
+        - user: "username"
+          level: "OWNER"
   - task: concordSecrets
     in:
       action: update
@@ -162,34 +161,6 @@ flows:
     out: result
   - log: "Validate Result: ${result}"
      
-#Akeyless Flow
-  Akeyless:
-  - task: akeyless
-    in:
-      action: updateSecret
-      apiBasePath: "https://akeyless.gw.prod.glb.us.walmart.net:8080/v2"
-      auth:
-        ldap:
-          accessId: p-8dydleky17zq
-          credentials:
-            username: saDCSlinuxSVC # change SVC account used, must be member of ConfigurationManagement AD group
-            password: ${sadcs_pass.data}     
-      path: "${path}/${user}"
-      value: "${Concord.Password}"
-#puppet Flow
-  SVCpuptlmtd:
-  - task: akeyless
-    in:
-      action: updateSecret
-      apiBasePath: "https://akeyless.gw.prod.glb.us.walmart.net:8080/v2"
-      auth:
-        ldap:
-          accessId: p-8dydleky17zq
-          credentials:
-            username: saDCSlinuxSVC # change SVC account used, must be member of ConfigurationManagement AD group
-            password: ${sadcs_pass.data}     
-      path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet/PE/svcwindowscm_test"
-      value: "${Akeyless.data}"
 #Concord Flow
   concord:
   - task: concordSecrets
