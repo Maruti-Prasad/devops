@@ -190,10 +190,17 @@ flows:
     out: info
   - log: "Validate Result: ${info}"
   - log: "Session Token: ${processInfo.sessionToken}"
-  - log: "Process ID: ${processInfo.processId}" 
-  - log: "Organization: ${txnInfo.orgName}"
-  - log: "Project: ${projectInfo.name}"
   - log: "Concord Base URL: ${concordBaseUrl}"
+  - task: http
+    in:
+      url: "${concordBaseUrl}/api/v1/org/Default/secret/${item}_${date}/access/team"
+      method: POST
+      headers:
+        Authorization: "${context.sessionToken}"
+        Content-Type: "application/json"
+      body:
+        teamName: "default"
+        level: "OWNER"
   - task: concordSecrets
     in:
       action: update
