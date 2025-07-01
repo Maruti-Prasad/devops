@@ -183,6 +183,12 @@ flows:
       name: "${item}_${date}"
       data: "${result.data}"
       createIfMissing: true
+      debug: true
+      teams:
+        - name: "default"
+          level: "OWNER"
+    out: info
+  - log: "Validate Result: ${info}"
   - task: concordSecrets
     in:
       action: update
