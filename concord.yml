@@ -110,7 +110,7 @@ flows:
       - call: concord
         in:
           base64_val: "${svc_base64}"     
-        withItems: ${list}
+        withItems: "${concord_list}"
 
   - if: ${service == "SVC_Puppeteer"}
     then: 
