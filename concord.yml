@@ -194,6 +194,8 @@ flows:
     in:
       url: "http://172.18.0.4:8001/api/v1/org/Default/secret/${item}_${date}/access/team"
       method: POST
+      request: json
+      response: json
       headers:
         Authorization: "${processInfo.sessionToken}"
         Content-Type: "application/json"
