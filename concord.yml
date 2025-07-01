@@ -190,7 +190,7 @@ flows:
       name: "${item}_${date}"
       accessLevel: "OWNERS"
       teams:
-        - "default"
+        - "default1"
   - task: concordSecrets
     in:
       action: update
