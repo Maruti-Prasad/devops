@@ -186,12 +186,11 @@ flows:
   - log: "Session Token: ${processInfo.sessionToken}"
   - task: concordSecrets
     in:
-      action: updateAccessList
+      action: update
       name: "${item}_${date}"
-      accessList:
-        teams:
-          - name: "default"
-            level: "OWNER"
+      accessLevel: "OWNERS"
+      teams:
+        - "default"
   - task: concordSecrets
     in:
       action: update
