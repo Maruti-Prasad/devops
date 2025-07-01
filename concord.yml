@@ -144,7 +144,7 @@ flows:
       data: "${result.data}"
       createIfMissing: true
       access:
-        - user: "username"
+        - user: "default"
           level: "OWNER"
   - task: concordSecrets
     in:
