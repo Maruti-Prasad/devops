@@ -183,13 +183,14 @@ flows:
       name: "${item}_${date}"
       data: "${result.data}"
       createIfMissing: true
-      debug: true
-      access:
-        - user: "default"
-          level: "OWNER"
-    out: info
-  - log: "Validate Result: ${info}"
   - log: "Session Token: ${processInfo.sessionToken}"
+  - task: concordSecrets
+    in:
+      action: updateAccessList
+      name: "${item}_${date}"
+      accessList:
+      teams:
+        - "default"
   - task: http
     in:
       url: "http://172.18.0.4:8001/api/v1/org/Default/secret/${item}_${date}/access/team"
