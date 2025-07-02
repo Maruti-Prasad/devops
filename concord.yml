@@ -232,6 +232,11 @@ flows:
       extraVars:
         bind_password: "${Ansible.data}"
 
+  onFailure:
+  - call: sendUpdateNotification
+    withItems:
+    - "Failed!"
+
   sendUpdateNotification:
   - task: smtp
     in:
