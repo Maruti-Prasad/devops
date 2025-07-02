@@ -132,6 +132,7 @@ flows:
     in:
       action: getAsString
       name: ${item}
+      ignoreFailures: true
     out: result
   - if: ${result.status != "OK"}
     then:
@@ -141,6 +142,7 @@ flows:
       action: create
       name: "${item}_${date}"
       data: "${result.data}"
+      ignoreFailures: true
       createIfMissing: true
       debug: true
       teams:
@@ -154,10 +156,12 @@ flows:
       name: "${item}"
       visibility: "PRIVATE"
       data: "${config}"
+      ignoreFailures: true
   - task: concordSecrets
     in:
       action: getAsString
       name: "${item}"
+      ignoreFailures: true
     out: result
   - log: "Validate Result: ${result}"
      
@@ -167,6 +171,7 @@ flows:
     in:
       action: getAsString
       name: ${item}
+      ignoreFailures: true
     out: result
   - log: "Old Value: ${result}"
   - if: ${result.status != "OK"}
@@ -178,6 +183,7 @@ flows:
       name: "${item}_${date}"
       data: "${result.data}"
       createIfMissing: true
+      ignoreFailures: true
   - log: "Session Token: ${processInfo}"
   - task: http
     in:
@@ -198,10 +204,12 @@ flows:
       name: "${item}"
       visibility: "PRIVATE"
       data: "${base64_val}"
+      ignoreFailures: true
   - task: concordSecrets
     in:
       action: getAsString
       name: ${item}
+      ignoreFailures: true
     out: newresult  
   - log: "New Value: ${newresult}"
 
