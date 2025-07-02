@@ -238,4 +238,12 @@ flows:
     - "Failed!"
 
   sendUpdateNotification:
-  - log: "failed"
+  - task: smtp
+    in:
+      mail:
+        from: "noreply@concord.com"
+        to: ${maintainerEmail}
+        subject: "Password Rotation for ${secret.userName} ${item}"
+        message: |
+          The automatic password rotation for ${secret.userName} ${item}
+          Log: https://concord.prod.walmart.com/#/process/${txId}/log
