@@ -46,6 +46,7 @@ flows:
         ansible_winrm_operation_timeout_sec: 120
         ansible_winrm_read_timeout_sec: 130
         ansible_winrm_message_encryption: auto
+  
   - script: python
     body: |
       svc_data = globals()[service]
@@ -74,6 +75,7 @@ flows:
   - form: ApprovalForm
     fields:
       - approval: { label: "˚Approve password update for: [Concord] → ${comma_concord_list} [Akeyless] → ${comma_akeyless_list}", type: boolean }
+  
   - if: ${ApprovalForm.approval}
     then:
       - log: "[INFO] Accepted for Password update ..."
@@ -88,156 +90,233 @@ flows:
 
   - if: ${service == "SVCWindowsCM"}
     then:
-      - call: Akeyless
-        in:
-          path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet/PE"
-          user: "${akeyless_list}"
-      - call: WMConfig
-        in:
-          config: "${WM_Config}"
-        withItems: "${concord_list}"
+      - try:
+        - call: Akeyless
+          in:
+            path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet/PE"
+            user: "${akeyless_list}"
+        - call: WMConfig
+          in:
+            config: "${WM_Config}"
+          withItems: "${concord_list}"
+        error:
+        - log: "[ERROR] Failed to update SVCWindowsCM secrets"
+        - throw: "SVCWindowsCM update failed"
 
   - if: ${service == "saDCSlinuxSVC"}
     then:
-      - script: ruby
-        body: |
-          require 'base64'
-          v = $execution.variables().get('svc_pass')
-          text = "sadcslinuxsvc:" + v
-          encoded = Base64.encode64(text)
-          $result.set("myVar", encoded);
-        out:
-          svc_base64: ${result.myVar}
-      - block:
-          - call: concord
-            in:
-              base64_val: "${svc_base64}"
-          - log: "Call finished for item: ${item}"
-        withItems: "${concord_list}"
-        ignoreErrors: true
+      - try:
+        - script: ruby
+          body: |
+            require 'base64'
+            v = $execution.variables().get('svc_pass')
+            text = "sadcslinuxsvc:" + v
+            encoded = Base64.encode64(text)
+            $result.set("myVar", encoded);
+          out:
+            svc_base64: ${result.myVar}
 
+        - call: concord
+          in:
+            base64_val: "${svc_base64}"
+          withItems: "${concord_list}"
+        error:
+        - log: "[ERROR] Failed to update saDCSlinuxSVC secrets"
+        - throw: "saDCSlinuxSVC update failed"
+     
   - if: ${service == "SVC_Puppeteer"}
     then: 
-      - call: Akeyless
-        in:
-          path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet_api"
-          user: "svc_pass_test"
+      - try:
+        - call: Akeyless
+          in:
+            path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet_api"
+            user: "svc_pass_test"
+        error:
+        - log: "[ERROR] Failed to update SVC_Puppeteer secrets"
+        - throw: "SVC_Puppeteer update failed"
 
   - if: ${service == "SVCpuptlmtd"}
     then:
-      - call: Akeyless
-        in:
-          path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet/PE"
-          user: "svcpuptlmtd_test"
+      - try:
+        - call: Akeyless
+          in:
+            path: "/Prod/WCNP/homeoffice/ConfigurationManagement/puppet/PE"
+            user: "svcpuptlmtd_test"
+        error:
+        - log: "[ERROR] Failed to update SVCpuptlmtd secrets"
+        - throw: "SVCpuptlmtd update failed"
+
+  - log: "[SUCCESS] Password update completed successfully"
 
   WMConfig:
-  - task: concordSecrets
-    in:
-      action: getAsString
-      name: ${item}
-      ignoreFailures: true
-    out: result
-  - if: ${result.status != "OK"}
-    then:
-      - throw: "${item} 'NOT_FOUND'"
-  - task: concordSecrets
-    in:
-      action: create
-      name: "${item}_${date}"
-      data: "${result.data}"
-      ignoreFailures: true
-      createIfMissing: true
-      debug: true
-      teams:
-        - name: "default"
-          level: "OWNER"
-    out: info
-  - log: "Validate Result: ${info}"
-  - task: concordSecrets
-    in:
-      action: update
-      name: "${item}"
-      visibility: "PRIVATE"
-      data: "${config}"
-      ignoreFailures: true
-  - task: concordSecrets
-    in:
-      action: getAsString
-      name: "${item}"
-      ignoreFailures: true
-    out: result
-  - log: "Validate Result: ${result}"
+  - try:
+    - task: concordSecrets
+      in:
+        action: getAsString
+        name: ${item}
+      out: result
+    - if: ${result.status != "OK"}
+      then:
+        - throw: "${item} 'NOT_FOUND'"
+    
+    - task: concordSecrets
+      in:
+        action: create
+        name: "${item}_${date}"
+        data: "${result.data}"
+        createIfMissing: true
+        debug: true
+        teams:
+          - name: "default"
+            level: "OWNER"
+      out: info
+    
+    - log: "Backup created: ${info}"
+    
+    - task: concordSecrets
+      in:
+        action: update
+        name: "${item}"
+        visibility: "PRIVATE"
+        data: "${config}"
+    
+    - task: concordSecrets
+      in:
+        action: getAsString
+        name: "${item}"
+      out: result
+    
+    - log: "Updated secret validated: ${result}"
+    error:
+    - log: "[ERROR] WMConfig failed for item: ${item}"
+    - throw: "WMConfig update failed for ${item}"
      
-#Concord Flow
+  # Concord Flow - Removed ignoreErrors flags
   concord:
-  - task: concordSecrets
-    in:
-      action: getAsString
-      name: ${item}
-      ignoreFailures: true
-    out: result
-  - log: "Old Value: ${result}"
-  - if: ${result.status != "OK"}
-    then:
-      - throw: "${item} 'NOT_FOUND'"
-  - task: concordSecrets
-    in:
-      action: create
-      name: "${item}_${date}"
-      data: "${result.data}"
-      createIfMissing: true
-      ignoreFailures: true
-  - log: "Session Token: ${processInfo}"
-  - task: http
-    in:
-      url: "http://172.18.0.5:8001/api/v1/org/Default/secret/saDCSlinuxSVC_test_01_07_2025/access"
-      method: POST
-      request: json
-      response: json
-      headers:
-        Authorization: "TJLvsCznelGebi1Y9ShQTQ" 
-        Content-Type: "application/json"
-      body:
-        orgName: "Default"
-        teamName: "default"
-        level: "READER"
-  - task: concordSecrets
-    in:
-      action: update
-      name: "${item}"
-      visibility: "PRIVATE"
-      data: "${base64_val}"
-      ignoreFailures: true
-  - task: concordSecrets
-    in:
-      action: getAsString
-      name: ${item}
-      ignoreFailures: true
-    out: newresult  
-  - log: "New Value: ${newresult}"
+  - try:
+    - task: concordSecrets
+      in:
+        action: getAsString
+        name: ${item}
+      out: result
+    
+    - log: "Old Value retrieved for: ${item}"
+    
+    - if: ${result.status != "OK"}
+      then:
+        - throw: "${item} 'NOT_FOUND'"
+    
+    - task: concordSecrets
+      in:
+        action: create
+        name: "${item}_${date}"
+        data: "${result.data}"
+        createIfMissing: true
+    
+    - log: "Backup created for: ${item}"
+    
+    - task: http
+      in:
+        url: "http://172.18.0.5:8001/api/v1/org/Default/secret/saDCSlinuxSVC_test_01_07_2025/access"
+        method: POST
+        request: json
+        response: json
+        headers:
+          Authorization: "TJLvsCznelGebi1Y9ShQTQ" 
+          Content-Type: "application/json"
+        body:
+          orgName: "Default"
+          teamName: "default"
+          level: "READER"
+      out: httpResult
+    
+    - task: concordSecrets
+      in:
+        action: update
+        name: "${item}"
+        visibility: "PRIVATE"
+        data: "${base64_val}"
+    
+    - task: concordSecrets
+      in:
+        action: getAsString
+        name: ${item}
+      out: newresult  
+    
+    - log: "Successfully updated: ${item}"
+    error:
+    - log: "[ERROR] Concord secret update failed for: ${item}"
+    - throw: "Concord secret update failed for ${item}"
+
+  Akeyless:
+  - try:
+    - log: "Updating Akeyless secret at path: ${path} for user: ${user}"
+    # Add your Akeyless update logic here
+    # Example placeholder:
+    - task: http
+      in:
+        url: "https://akeyless-api-endpoint/update"
+        method: POST
+        request: json
+        response: json
+        headers:
+          Authorization: "Bearer ${akeyless_token}"
+          Content-Type: "application/json"
+        body:
+          path: "${path}"
+          user: "${user}"
+          password: "${svc_pass}"
+    - log: "Successfully updated Akeyless secret for: ${user}"
+    error:
+    - log: "[ERROR] Akeyless update failed for user: ${user} at path: ${path}"
+    - throw: "Akeyless update failed for ${user}"
 
   Ansible:
-  - form: Ansible
-  - task: ansible
-    in:
-      auth:
-        privateKey:
-          user: "root"
-          secret:
-            org: "ComputeManagement" # optional
-            name: "config_mgmt_ansible"
-      inventory:
-        - remote:
-            hosts:
-              - "pe-metrics.wal-mart.com"
-      playbook: playbooks/update.yml
-      extraVars:
-        bind_password: "${Ansible.data}"
+  - try:
+    - form: Ansible
+    - task: ansible
+      in:
+        auth:
+          privateKey:
+            user: "root"
+            secret:
+              org: "ComputeManagement" # optional
+              name: "config_mgmt_ansible"
+        inventory:
+          - remote:
+              hosts:
+                - "pe-metrics.wal-mart.com"
+        playbook: playbooks/update.yml
+        extraVars:
+          bind_password: "${Ansible.data}"
+    error:
+    - log: "[ERROR] Ansible playbook execution failed"
+    - throw: "Ansible execution failed"
 
   onFailure:
+  - log: "[FAILURE] Workflow failed, sending notification..."
   - call: sendUpdateNotification
-    withItems:
-    - "Failed!"
+    in:
+      status: "Failed"
+      error: "${lastError.cause}"
+      service: "${service}"
 
   sendUpdateNotification:
-  - log: "failed"
+  - log: "[NOTIFICATION] Sending failure notification for service: ${service}"
+  - log: "[ERROR DETAILS] ${error}"
+  # Add email notification here if needed
+  - task: smtp
+    in:
+      host: "your-smtp-server"
+      port: 587
+      from: "${maintainerEmail}"
+      to: ["admin@company.com"]
+      subject: "Password Update Failed for ${service}"
+      message: |
+        Password update workflow failed for service: ${service}
+        
+        Error Details: ${error}
+        
+        Date: ${date}
+        
+        Please investigate and retry if necessary.
