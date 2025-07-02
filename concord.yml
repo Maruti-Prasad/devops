@@ -6,6 +6,7 @@ configuration:
   - "mvn://com.walmartlabs.concord.plugins.basic:ansible-tasks:2.14.0"
   runtime: "concord-v2"
   arguments:
+    maintainerEmail: ""
     saDCSlinuxSVC: 
       concord: ["saDCSlinuxSVC_test", "saDCSlinuxSVC_user_test"]
       akeyless: ["looper_http_api_token_test", "osp_ad_svc_password_test"]
@@ -46,6 +47,8 @@ flows:
         ansible_winrm_message_encryption: auto
   - script: python
     body: |
+      x = txId[-6:]
+      execution.setVariable("first_txId", txId)
       svc_data = globals()[service]
       concord_list = svc_data.get("concord")
       akeyless_list = svc_data.get("akeyless")
@@ -229,3 +232,14 @@ flows:
       playbook: playbooks/update.yml
       extraVars:
         bind_password: "${Ansible.data}"
+
+  sendUpdateNotification:
+  - task: smtp
+    in:
+      mail:
+        from: "noreply@concord.com"
+        to: ${maintainerEmail}
+        subject: "Password Rotation for ${secret.userName} ${item}"
+        message: |
+          The automatic password rotation for ${secret.userName} ${item}
+          Log: https://concord.prod.walmart.com/#/process/${first_txId}/log
