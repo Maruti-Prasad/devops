@@ -243,7 +243,7 @@ flows:
       mail:
         from: "noreply@concord.com"
         to: ${maintainerEmail}
-        subject: "Password Rotation for ${secret.userName} ${item}"
+        subject: "Password Rotation for  ${item}"
         message: |
-          The automatic password rotation for ${secret.userName} ${item}
+          The automatic password rotation for ${item}
           Log: https://concord.prod.walmart.com/#/process/${txId}/log
