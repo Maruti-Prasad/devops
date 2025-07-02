@@ -4,6 +4,7 @@ configuration:
   - "mvn://org.python:jython-standalone:2.7.4"
   - "mvn://org.jruby:jruby:9.1.17.0"
   - "mvn://com.walmartlabs.concord.plugins.basic:ansible-tasks:2.14.0"
+  - "mvn://com.walmartlabs.concord.plugins.basic:smtp-tasks:latest"
   runtime: "concord-v2"
   arguments:
     maintainerEmail: ""
@@ -48,7 +49,6 @@ flows:
   - script: python
     body: |
       x = txId[-6:]
-      execution.setVariable("first_txId", txId)
       svc_data = globals()[service]
       concord_list = svc_data.get("concord")
       akeyless_list = svc_data.get("akeyless")
@@ -66,12 +66,15 @@ flows:
       result.set("akeyless_list", akeyless_list)
       result.set("comma_concord", comma_concord)
       result.set("comma_akeyless", comma_akeyless)
+      result.set("first_txId", txId)
     out:
       concord_list: ${result.concord_list}
       akeyless_list: ${result.akeyless_list}
       comma_concord_list: ${result.comma_concord}     
       comma_akeyless_list: ${result.comma_akeyless}
+      first_txId: ${result.first_txId}
 
+  - log: "test ${first_txId}."
   - form: ApprovalForm
     fields:
       - approval: { label: "˚Approve password update for: [Concord] → ${comma_concord_list} [Akeyless] → ${comma_akeyless_list}", type: boolean }
