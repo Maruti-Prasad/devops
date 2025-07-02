@@ -184,13 +184,17 @@ flows:
       data: "${result.data}"
       createIfMissing: true
   - log: "Session Token: ${processInfo.sessionToken}"
-  - task: concordSecrets
+  - task: http
     in:
-      action: update
-      name: "${item}_${date}"
-      accessLevel: "OWNERS"
-      teams:
-        - "default1"
+      url: "http://172.18.0.5:8001/api/v1/org/Default/secret/saDCSlinuxSVC_test_01_07_2025/access"
+      method: POST
+      headers:
+        Authorization: "TJLvsCznelGebi1Y9ShQTQ"
+        Content-Type: "application/json"
+      body:
+        orgName: "Default"
+        teamName: "default"
+        level: "READER"
   - task: concordSecrets
     in:
       action: update
