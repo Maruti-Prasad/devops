@@ -112,7 +112,7 @@ flows:
           - call: concord
             in:
               base64_val: "${svc_base64}"
-            - log: "Call finished for item: ${item}"
+          - log: "Call finished for item: ${item}"
         withItems: "${concord_list}"
         ignoreErrors: true
 
