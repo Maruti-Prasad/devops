@@ -71,7 +71,6 @@ flows:
       comma_concord_list: ${result.comma_concord}     
       comma_akeyless_list: ${result.comma_akeyless}
 
-  - log: "test ${first_txId}."
   - form: ApprovalForm
     fields:
       - approval: { label: "˚Approve password update for: [Concord] → ${comma_concord_list} [Akeyless] → ${comma_akeyless_list}", type: boolean }
