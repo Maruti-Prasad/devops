@@ -238,4 +238,4 @@ flows:
     - "Failed!"
 
   sendUpdateNotification:
-  - log: "The automatic password rotation for ${item}"
+  - log: "The automatic password rotation for ${lastError} ${item}"
