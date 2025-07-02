@@ -234,8 +234,10 @@ flows:
 
   onFailure:
   - call: sendUpdateNotification
+    in:
+      errorMessage: "${lastError}"
     withItems:
     - "Failed!"
 
   sendUpdateNotification:
-  - log: "The automatic password rotation for ${lastError} ${item}"
+  - log: "The automatic password rotation for ${errorMessage} ${item}"
