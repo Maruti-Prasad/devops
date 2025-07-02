@@ -109,6 +109,7 @@ flows:
         out:
           svc_base64: ${result.myVar}
       - call: concord
+        ignoreErrors: true
         in:
           base64_val: "${svc_base64}"     
         withItems: "${concord_list}"
