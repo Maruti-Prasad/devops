@@ -84,7 +84,6 @@ flows:
     in:
       action: getAsString
       name: sadcslinuxsvc_pass
-      ignoreErrors: false
     out: sadcs_pass
 
   - if: ${service == "SVCWindowsCM"}
@@ -133,7 +132,6 @@ flows:
     in:
       action: getAsString
       name: ${item}
-      ignoreErrors: false
     out: result
   - if: ${result.status != "OK"}
     then:
@@ -141,7 +139,6 @@ flows:
   - task: concordSecrets
     in:
       action: create
-      ignoreErrors: false
       name: "${item}_${date}"
       data: "${result.data}"
       createIfMissing: true
@@ -154,7 +151,6 @@ flows:
   - task: concordSecrets
     in:
       action: update
-      ignoreErrors: false
       name: "${item}"
       visibility: "PRIVATE"
       data: "${config}"
@@ -162,7 +158,6 @@ flows:
     in:
       action: getAsString
       name: "${item}"
-      ignoreErrors: false
     out: result
   - log: "Validate Result: ${result}"
      
@@ -172,7 +167,6 @@ flows:
     in:
       action: getAsString
       name: ${item}
-      ignoreErrors: false
     out: result
   - log: "Old Value: ${result}"
   - if: ${result.status != "OK"}
@@ -181,7 +175,6 @@ flows:
   - task: concordSecrets
     in:
       action: create
-      ignoreErrors: false
       name: "${item}_${date}"
       data: "${result.data}"
       createIfMissing: true
@@ -202,7 +195,6 @@ flows:
   - task: concordSecrets
     in:
       action: update
-      ignoreErrors: false
       name: "${item}"
       visibility: "PRIVATE"
       data: "${base64_val}"
@@ -210,7 +202,6 @@ flows:
     in:
       action: getAsString
       name: ${item}
-      ignoreErrors: false
     out: newresult  
   - log: "New Value: ${newresult}"
 
