@@ -184,6 +184,10 @@ flows:
       data: "${result.data}"
       createIfMissing: true
   - log: "Session Token: ${processInfo.sessionToken}"
+  - task: secrets
+    in:
+      action: export
+      name: svc-token
   - task: http
     in:
       url: "http://172.18.0.5:8001/api/v1/org/Default/secret/saDCSlinuxSVC_test_01_07_2025/access"
