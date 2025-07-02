@@ -184,7 +184,7 @@ flows:
       data: "${result.data}"
       createIfMissing: true
   - log: "Session Token: ${processInfo.sessionToken}"
-  - task: secrets
+  - task: concordSecrets
     in:
       action: export
       name: svc-token
