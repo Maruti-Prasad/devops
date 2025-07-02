@@ -108,11 +108,13 @@ flows:
           $result.set("myVar", encoded);
         out:
           svc_base64: ${result.myVar}
-      - call: concord
-        ignoreErrors: true
-        in:
-          base64_val: "${svc_base64}"     
+      - block:
+          - call: concord
+            in:
+              base64_val: "${svc_base64}"
+            - log: "Call finished for item: ${item}"
         withItems: "${concord_list}"
+        ignoreErrors: true
 
   - if: ${service == "SVC_Puppeteer"}
     then: 
