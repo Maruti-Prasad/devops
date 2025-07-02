@@ -191,7 +191,7 @@ flows:
       request: json
       response: json
       headers:
-        Authorization: "${processInfo.sessionToken}"
+        Authorization: "Bearer ${tx.sessionToken}" 
         Content-Type: "application/json"
       body:
         orgName: "Default"
