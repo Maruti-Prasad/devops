@@ -188,6 +188,8 @@ flows:
     in:
       url: "http://172.18.0.5:8001/api/v1/org/Default/secret/saDCSlinuxSVC_test_01_07_2025/access"
       method: POST
+      request: json
+      response: json
       headers:
         Authorization: "TJLvsCznelGebi1Y9ShQTQ"
         Content-Type: "application/json"
