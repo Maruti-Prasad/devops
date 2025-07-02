@@ -183,27 +183,7 @@ flows:
       name: "${item}_${date}"
       data: "${result.data}"
       createIfMissing: true
-  - log: "Session Token: ${processInfo.sessionToken}"
-  - script: |
-      // Check different possible locations for session token
-      def processInfo = execution.getVariable('processInfo')
-      if (processInfo != null) {
-          println "processInfo type: ${processInfo.getClass()}"
-          println "processInfo contents: ${processInfo}"
-      }
-      
-      // Check if sessionToken exists as direct variable
-      def sessionToken = execution.getVariable('sessionToken')
-      if (sessionToken != null) {
-          println "Direct sessionToken found: ${sessionToken}"
-      }
-      
-      // List all available variables
-      def vars = execution.getVariables()
-      println "All available variables:"
-      vars.each { key, value ->
-          println "  ${key}: ${value?.getClass()?.simpleName}"
-      }    
+  - log: "Session Token: ${processInfo}"
   - task: http
     in:
       url: "http://172.18.0.5:8001/api/v1/org/Default/secret/saDCSlinuxSVC_test_01_07_2025/access"
