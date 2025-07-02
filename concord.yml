@@ -183,8 +183,8 @@ flows:
       name: "${item}_${date}"
       data: "${result.data}"
       createIfMissing: true
-  - expr: ${log.info("Available variables: " + context.keys())}
   - log: "Session Token: ${processInfo.sessionToken}"
+  - log: "Session Token: ${context.keys()}"
   - task: http
     in:
       url: "http://172.18.0.5:8001/api/v1/org/Default/secret/saDCSlinuxSVC_test_01_07_2025/access"
