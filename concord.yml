@@ -235,7 +235,7 @@ flows:
   onFailure:
   - call: sendUpdateNotification
     in:
-      errorMessage: "${lastError}"
+      errorMessage: "${txId}"
     withItems:
     - "Failed!"
 
