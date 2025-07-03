@@ -31,6 +31,8 @@ forms:
 
 flows:
   default:
+  - set:
+      first_txId: ${txId}
   - form: Concord
   - set:
       date: "${datetime.format(datetime.current(), 'dd_MM_yyyy')}"
@@ -46,9 +48,6 @@ flows:
         ansible_winrm_operation_timeout_sec: 120
         ansible_winrm_read_timeout_sec: 130
         ansible_winrm_message_encryption: auto
-
-  - set:
-      first_txId: ${txId}
 
   - script: python
     body: |
