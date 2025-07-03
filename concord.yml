@@ -47,10 +47,8 @@ flows:
         ansible_winrm_read_timeout_sec: 130
         ansible_winrm_message_encryption: auto
 
-  - script: python
-    body: |
-      x = txId[-6:]
-      context.setVariable("first_txId", txId)
+  - set:
+      first_txId: ${txId}
 
   - script: python
     body: |
