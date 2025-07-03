@@ -51,11 +51,6 @@ flows:
 
   - script: python
     body: |
-      email = context.getVariable("maintainerEmail")
-      if len(email) <= 0:
-        context.setVariable("maintainerEmail", initiator['email'])
-  - script: python
-    body: |
       svc_data = globals()[service]
       concord_list = svc_data.get("concord")
       akeyless_list = svc_data.get("akeyless")
