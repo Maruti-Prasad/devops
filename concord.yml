@@ -244,9 +244,9 @@ flows:
   onFailure:
   - call: sendUpdateNotification
     in:
-      errorMessage: "${txId}"
+      errorMessage: "${first_txId}"
     withItems:
     - "Failed!"
 
   sendUpdateNotification:
-  - log: "The automatic password rotation for ${first_txId} ${item}"
+  - log: "The automatic password rotation for ${errorMessage} ${item}"
