@@ -46,6 +46,17 @@ flows:
         ansible_winrm_operation_timeout_sec: 120
         ansible_winrm_read_timeout_sec: 130
         ansible_winrm_message_encryption: auto
+
+  - script: python
+    body: |
+      x = txId[-6:]
+      context.setVariable("first_txId", txId)
+
+  - script: python
+    body: |
+      email = context.getVariable("maintainerEmail")
+      if len(email) <= 0:
+        context.setVariable("maintainerEmail", initiator['email'])
   - script: python
     body: |
       svc_data = globals()[service]
