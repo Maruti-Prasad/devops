@@ -5,8 +5,8 @@ flows:
       in:
         auth:
           basic:
-            username: ${crypto.exportAsString('ComputeManagement', 'prod_xmuser', null)}
-            password: ${crypto.exportAsString('ComputeManagement', 'prod_xmauth', null)}
+            username: ${crypto.exportAsString('Default', 'prod_xmuser', null)}
+            password: ${crypto.exportAsString('Default', 'prod_xmauth', null)}
         method: GET
         proxy: "http://sysproxy.wal-mart.com:8080"
         url: "https://walmart.xmatters.com/api/xm/1/on-call-summary?groups=ConfigurationManagement"
