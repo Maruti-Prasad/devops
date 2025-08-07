@@ -82,6 +82,7 @@ flows:
       - log: "[INFO] Accepted for Password update ..."
     else:
       - throw: "[ERROR] Password update is not accepted ${initiator} ..."
+      - call: createAutoDeployChange
 
   - task: concordSecrets
     in:

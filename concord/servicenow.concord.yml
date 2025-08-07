@@ -1,0 +1,75 @@
+flows:
+  getOnCall:
+    - log: Getting On-call from xmatters group - ConfigurationManagement
+    - task: http
+      in:
+        auth:
+          basic:
+            username: ${crypto.exportAsString('ComputeManagement', 'prod_xmuser', null)}
+            password: ${crypto.exportAsString('ComputeManagement', 'prod_xmauth', null)}
+        method: GET
+        proxy: "http://sysproxy.wal-mart.com:8080"
+        url: "https://walmart.xmatters.com/api/xm/1/on-call-summary?groups=ConfigurationManagement"
+        response: json
+      out: jsonResponse
+    - log: "Response received: ${jsonResponse.content}"
+    - if: ${jsonResponse.statusCode != 200}
+      then:
+        - throw: "Could not get on-call from xmatters. Status code: ${jsonResponse.statusCode}"
+    - set:
+        on_call: ${jsonResponse.content.stream().findFirst().get().recipient.targetName}
+    - log: Configuration Management On-call -> ${on_call}
+
+  createAutoDeployChange:
+    - call: getOnCall
+      out:
+        - on_call
+    - log: Creating ServiceNow Change Record
+    - task: servicenow
+      in:
+        action: createAutoDeployChange
+        appName: "Puppet Enterprise Automation"
+        version: "${projectInfo.repoCommitId}"
+        testPlan: "https://collaboration.wal-mart.com/display/LINCM/Submitting+a+pull+request"
+        description: "${changeDescription}"
+        risk: "4"
+        impact: "4"
+        productionReadinessChecklist: false
+        productionSystem: ${isProduction}
+        reasonForInstall: "${changeReason}"
+        requestedByUser: ${on_call}
+        assignedTo: "saDCSlinuxSVC"
+        assignmentGroup: "GTPIS Compute Software Repo and Configuration Management"
+        category: "application"
+        affectedCIClass: "Business Service"
+        primaryCI: "d575dc5a1b3720944629639bbc4bcb23"
+        changeManagerGroup: "Change Managers - US"
+        affectedGEOs:
+          - "US"
+        businessUnit: # Updated for ServiceNow API change 07/01/21
+          - "Data Center"
+          - "Stores"
+          - "Home Office"
+      out:
+        changeInfo: ${result}
+
+  closeSuccessfulAutoDeployChange:
+    - log: Closing ServiceNow Change Record
+    - task: servicenow
+      in:
+        action: closeAutoDeployChange
+        changeRecordId: ${changeRecordId}
+        closeCode: "Successful"
+      out:
+        changeInfo: ${result}
+
+  closeUnsuccessfulAutoDeployChange:
+    - log: Closing ServiceNow Change Record
+    - task: servicenow
+      in:
+        action: closeAutoDeployChange
+        changeRecordId: ${changeRecordId}
+        closeCode: "Unsuccessful"
+        closeCodeReason: "Backout / Partial"
+      out:
+        changeInfo: ${result}
